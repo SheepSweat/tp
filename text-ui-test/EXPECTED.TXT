@@ -1,9 +1,87 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
+ Hello! I'm [ModTrack]
+ What can I do for you?
+ Ready to go Graduate? Nah wgt ord loh :D Type a module code and I will record it for you!
+----------------------------------------------------
+Module added:
 
-What is your name?
-Hello James Gosling
+Name: CS2113
+Year: YEAR1
+Semester: SEM1
+Status: Completed
+Modular Credits: 4
+
+Total modules tracked: 1
+----------------------------------------------------
+===== Module Tracker =====
+Completed Modules:
+? CS2113(1) - 4MCs
+
+Remaining Reference Modules:
+? CS1010 (1) - 4MCs
+? CG1111A (1) - 4MCs
+? MA1511 (1) - 2MCs
+? MA1512 (1) - 2MCs
+? CG2111A (2) - 4MCs
+? MA1508E (2) - 4MCs
+? EE2026 (1) - 4MCs
+? CS2040C (1) - 4MCs
+? CS2107 (1) - 4MCs
+? CG2023 (2) - 4MCs
+? CS1231 (2) - 4MCs
+? CG3201 (2) - 4MCs
+? CG2271 (2) - 4MCs
+? CG2027 (2) - 2MCs
+? CG2028 (2) - 2MCs
+? EE4204 (1) - 4MCs
+? CG3207 (1) - 4MCs
+? EG3611A/CP3880 (1) - 10MCs
+? CG4002/CG4001 (2) - 8MCs
+? EG1311 (1) - 4MCs
+? PF1101 (2) - 4MCs
+? DTK1234 (2) - 4MCs
+? GEA1000 (2) - 4MCs
+? ES2631 (1) - 4MCs
+? CDE2501 (2) - 4MCs
+? EE2211 (2) - 4MCs
+? EG2401A (1) - 2MCs
+===== Computer Engineering Graduation Requirements =====
+Total MCs Required: 160
+Core Modules:
+- CS1010
+- CG1111A
+- MA1511
+- MA1512
+- CG2111A
+- MA1508E
+- EE2026
+- CS2040C
+- CS2107
+- CG2023
+- CS2113
+- CS1231
+- CG3201
+- CG2271
+- CG2027
+- CG2028
+- EE4204
+- CG3207
+
+Project/Internship:
+- EG3611A/CP3880
+- CG4002/CG4001
+
+Engineering Common Curriculum:
+- EG1311
+- PF1101
+- DTK1234
+- GEA1000
+- ES2631
+- CDE2501
+- EE2211
+- EG2401A
+
+General Education Curriculum:
+- GENXXXX
+- GECXXXX
+bye
+ Bye. Hope to see you again soon!
