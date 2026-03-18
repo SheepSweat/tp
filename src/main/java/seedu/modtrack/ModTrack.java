@@ -6,7 +6,6 @@ import java.util.Scanner;
 import seedu.modtrack.model.AddCommand;
 import seedu.modtrack.model.Mod;
 import seedu.modtrack.model.ReferenceList;
-import seedu.modtrack.model.AddCommand;
 import seedu.modtrack.ui.Ui;
 
 public class ModTrack {
@@ -24,7 +23,7 @@ public class ModTrack {
         this.referenceList = new ReferenceList();
         this.taskList = new ArrayList<>();
         // 2. Call the method to fill it with data
-        referenceList.populateReferenceList(referenceList.list);
+        this.referenceList.populateReferenceList(this.referenceList.list);
     }
 
     public void run() {
@@ -33,12 +32,12 @@ public class ModTrack {
 
         this.ui.showOpeningText();
         // interim testing
-        AddCommand commandtest = new AddCommand("CS2113",1,1,4);
-        commandtest.execute(taskList);
+        AddCommand commandtest = new AddCommand("CS2113", 1, 1, 4);
+        commandtest.execute(this.taskList);
 
-        this.ui.showList(taskList,referenceList.list);
+        this.ui.showList(this.taskList, this.referenceList.list);
         this.ui.showGradReq();
-        //testing code end
+        // testing code end
 
         while (isRunning) {
 

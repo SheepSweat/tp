@@ -33,15 +33,15 @@ public class Ui {
         System.out.println("Module does not exist. Choose another number.");
     }
 
-    public void showMarkedCourse(String taskInfo, String modularCredits){
+    public void showMarkedCourse(String taskInfo, String modularCredits) {
         System.out.println("Module marked as completed:");
-        System.out.println("Name: "+ taskInfo);
+        System.out.println("Name: " + taskInfo);
         System.out.println("Modular Credits Earned :" + modularCredits);
     }
 
-    public void showUnmarkedCourse(String taskInfo){
+    public void showUnmarkedCourse(String taskInfo) {
         System.out.println("Module marked as incomplete:");
-        System.out.println("Name: "+ taskInfo);
+        System.out.println("Name: " + taskInfo);
     }
 
     public void showList(ArrayList<Mod> taskList, ArrayList<Mod> fullModuleList) {
@@ -68,12 +68,13 @@ public class Ui {
 
             // Only print "✘" if it was NOT found in the taskList
             if (!alreadyAdded) {
-                System.out.println("✘ " + module.getModName() + " (" + module.getSemester() + ") - " + module.getModCredits() + "MCs");
+                System.out.println("✘ " + module.getModName()
+                        + " (" + module.getSemester() + ") - " + module.getModCredits() + "MCs");
             }
         }
     }
 
-    public void showGradReq(){
+    public void showGradReq() {
         System.out.println("===== Computer Engineering Graduation Requirements =====");
         System.out.println("Total MCs Required: 160");
         System.out.println("Core Modules:");
@@ -113,7 +114,6 @@ public class Ui {
         System.out.println("General Education Curriculum:");
         System.out.println("- GENXXXX");
         System.out.println("- GECXXXX");
-
 
     }
 }
