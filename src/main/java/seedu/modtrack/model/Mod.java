@@ -23,19 +23,19 @@ public class Mod {
     }
 
     public String getModName() {
-        return modName;
+        return this.modName;
     }
 
     public int getYear() {
-        return year;
+        return this.year;
     }
 
     public int getSemester() {
-        return semester;
+        return this.semester;
     }
 
     public int getModCredits() {
-        return modCredits;
+        return this.modCredits;
     }
 
     public String toString() {
@@ -43,20 +43,20 @@ public class Mod {
         modString += "Name: " + this.modName + "\n";
         modString += "Year: YEAR" + this.year + "\n";
         modString += "Semester: SEM" + this.semester + "\n";
-        modString += "Status: " + (isComplete? "Completed" : "Incomplete") + "\n";
+        modString += "Status: " + (this.isComplete ? "Completed" : "Incomplete") + "\n";
         modString += "Modular Credits: " + this.modCredits + "\n";
         return modString;
     }
 
     public boolean getIsComplete() {
-        return isComplete;
+        return this.isComplete;
     }
 
     public String toFileFormat() {
-        return (isComplete ? "1 | " : "0 | ")
-                + modName + " | "
-                + year + " | "
-                + semester + " | "
-                + modCredits;
+        return (this.isComplete ? "1 | " : "0 | ")
+                + this.modName + " | "
+                + this.year + " | "
+                + this.semester + " | "
+                + this.modCredits;
     }
 }

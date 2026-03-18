@@ -10,7 +10,7 @@ public class ReferenceList {
         this.list = new ArrayList<>();
     }
 
-    public void populateReferenceList(ArrayList<Mod> list){
+    public void populateReferenceList(ArrayList<Mod> list) {
         Mod newmod;
         newmod = new Mod("CS1010", 1, 1, 4);
         list.add(newmod);

@@ -12,7 +12,7 @@ public class Storage {
     private static final String DIRECTORY_PATH = "./data/";
 
     public Storage() {
-        prepareFile();
+        this.prepareFile();
     }
 
     private void prepareFile() {
@@ -84,29 +84,29 @@ public class Storage {
     }
 }
 
-    // public ArrayList<Mod> load() throws FileNotFoundException {
-    //
-    // File f = new File(FILE_PATH);
-    // Scanner s = new Scanner(f);
-    // ArrayList<Mod> list = new ArrayList<>();
-    // String line, status, name, year, semester, credits;
-    // String[] words;
-    // while(s.hasNext()) {
-    // Mod newMod = null;
-    // line = s.nextLine();
-    // words = line.split("\\|");
-    // status = words[0].trim();
-    // name = words[1].trim();
-    // year = words[2].trim();
-    // semester = words[3].trim();
-    // credits = words[4].trim();
-    //
-    // newMod = new Mod(name, year, semester, credits);
-    //
-    // if (status.equals("1") && newMod != null) {
-    // newMod.setToDone();
-    // }
-    // list.add(newMod);
-    // }
-    // return list;
-    // }
+// public ArrayList<Mod> load() throws FileNotFoundException {
+//
+// File f = new File(FILE_PATH);
+// Scanner s = new Scanner(f);
+// ArrayList<Mod> list = new ArrayList<>();
+// String line, status, name, year, semester, credits;
+// String[] words;
+// while(s.hasNext()) {
+// Mod newMod = null;
+// line = s.nextLine();
+// words = line.split("\\|");
+// status = words[0].trim();
+// name = words[1].trim();
+// year = words[2].trim();
+// semester = words[3].trim();
+// credits = words[4].trim();
+//
+// newMod = new Mod(name, year, semester, credits);
+//
+// if (status.equals("1") && newMod != null) {
+// newMod.setToDone();
+// }
+// list.add(newMod);
+// }
+// return list;
+// }

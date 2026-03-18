@@ -12,7 +12,7 @@ public class DeleteCommand extends Command {
     @Override
     public void execute(ArrayList<Mod> list) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getModName().equalsIgnoreCase(modName)) {
+            if (list.get(i).getModName().equalsIgnoreCase(this.modName)) {
                 System.out.println("----------------------------------------------------");
                 System.out.println("Noted. I've removed this mod:\n");
                 System.out.println(list.get(i).toString());
