@@ -1,6 +1,6 @@
-import java.util.ArrayList;
+package seedu.modtrack.model;
 
-import seedu.modtrack.model.Mod;
+import java.util.ArrayList;
 
 public abstract class Command {
     protected boolean isExit = false;

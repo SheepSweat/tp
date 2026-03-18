@@ -1,8 +1,8 @@
+package seedu.modtrack.model;
+
 import java.util.ArrayList;
 
-import seedu.modtrack.model.Mod;
-
-public class AddCommand extends Command{
+public class AddCommand extends Command {
     private String modName;
     private int year;
     private int semester;
@@ -20,12 +20,14 @@ public class AddCommand extends Command{
         System.out.println("Module added:\n");
         System.out.println(mod.toString());
         System.out.printf("Total modules tracked: %d", list.size());
+        System.out.println();
         System.out.println("----------------------------------------------------");
     }
 
     @Override
     public void execute(ArrayList<Mod> list) {
         Mod mod = new Mod(modName, year, semester, modCredits);
+        mod.setToDone();
         list.add(mod);
         printAddMessage(list, mod);
     }

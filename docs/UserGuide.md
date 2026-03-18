@@ -35,7 +35,7 @@ Example of usage:
 
 **A**: {your answer here}
 
-## Command Summary
+## seedu.modtrack.model.Command Summary
 
 {Give a 'cheat sheet' of commands here}
 

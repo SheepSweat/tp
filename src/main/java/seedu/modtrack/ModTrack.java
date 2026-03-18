@@ -3,8 +3,10 @@ package seedu.modtrack;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import seedu.modtrack.model.AddCommand;
 import seedu.modtrack.model.Mod;
 import seedu.modtrack.model.ReferenceList;
+import seedu.modtrack.model.AddCommand;
 import seedu.modtrack.ui.Ui;
 
 public class ModTrack {
@@ -30,6 +32,9 @@ public class ModTrack {
         Boolean isRunning = true;
 
         this.ui.showOpeningText();
+        AddCommand commandtest = new AddCommand("CS2113",1,1,4);
+        commandtest.execute(taskList);
+
         this.ui.showList(taskList,referenceList.list);
         while (isRunning) {
 
