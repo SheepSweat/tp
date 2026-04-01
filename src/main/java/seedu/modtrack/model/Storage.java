@@ -12,7 +12,7 @@ public class Storage {
     private static final String DIRECTORY_PATH = "./data/";
 
     public Storage() {
-        this.prepareFile();
+        prepareFile();
     }
 
     private void prepareFile() {
@@ -54,23 +54,41 @@ public class Storage {
                 }
 
                 String[] parts = line.split("\\s*\\|\\s*");
-                if (parts.length != 5) {
-                    continue;
+
+                if (parts.length == 5) {
+                    // backward compatibility with old save format
+                    String status = parts[0];
+                    String name = parts[1];
+                    int year = Integer.parseInt(parts[2]);
+                    int semester = Integer.parseInt(parts[3]);
+                    int credits = Integer.parseInt(parts[4]);
+
+                    Mod mod = new Mod(name, year, semester, credits);
+                    if (status.equals("1")) {
+                        mod.setToDone();
+                    }
+                    list.add(mod);
+                } else if (parts.length == 8) {
+                    String status = parts[0];
+                    String name = parts[1];
+                    int year = Integer.parseInt(parts[2]);
+                    int semester = Integer.parseInt(parts[3]);
+                    int credits = Integer.parseInt(parts[4]);
+                    int progress = Integer.parseInt(parts[5]);
+                    String completionType = parts[6];
+                    String prereqText = parts[7];
+
+                    Mod mod = new Mod(name, year, semester, credits);
+
+                    if (status.equals("1")) {
+                        mod.setToDone();
+                    }
+                    mod.setProgressPercentage(progress);
+                    mod.setCompletionType(completionType);
+                    mod.setPrerequisites(Mod.parsePrerequisites(prereqText));
+
+                    list.add(mod);
                 }
-
-                String status = parts[0];
-                String name = parts[1];
-                int year = Integer.parseInt(parts[2]);
-                int semester = Integer.parseInt(parts[3]);
-                int credits = Integer.parseInt(parts[4]);
-
-                Mod mod = new Mod(name, year, semester, credits);
-
-                if (status.equals("1")) {
-                    mod.setToDone();
-                }
-
-                list.add(mod);
             }
 
             scanner.close();
@@ -83,30 +101,3 @@ public class Storage {
         return list;
     }
 }
-
-// public ArrayList<Mod> load() throws FileNotFoundException {
-//
-// File f = new File(FILE_PATH);
-// Scanner s = new Scanner(f);
-// ArrayList<Mod> list = new ArrayList<>();
-// String line, status, name, year, semester, credits;
-// String[] words;
-// while(s.hasNext()) {
-// Mod newMod = null;
-// line = s.nextLine();
-// words = line.split("\\|");
-// status = words[0].trim();
-// name = words[1].trim();
-// year = words[2].trim();
-// semester = words[3].trim();
-// credits = words[4].trim();
-//
-// newMod = new Mod(name, year, semester, credits);
-//
-// if (status.equals("1") && newMod != null) {
-// newMod.setToDone();
-// }
-// list.add(newMod);
-// }
-// return list;
-// }

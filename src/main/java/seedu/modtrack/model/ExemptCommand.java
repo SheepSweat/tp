@@ -2,10 +2,10 @@ package seedu.modtrack.model;
 
 import java.util.ArrayList;
 
-public class MarkCommand extends Command {
-    private String modName;
+public class ExemptCommand extends Command {
+    private final String modName;
 
-    public MarkCommand(String modName) {
+    public ExemptCommand(String modName) {
         this.modName = modName;
     }
 
@@ -13,8 +13,8 @@ public class MarkCommand extends Command {
     public void execute(ArrayList<Mod> list) {
         for (Mod mod : list) {
             if (mod.getModName().equalsIgnoreCase(modName)) {
-                mod.setToDone();
-                System.out.println("Module marked as completed:");
+                mod.setToExempted();
+                System.out.println("Module marked as exempted:");
                 System.out.println(mod.getModName());
                 return;
             }
