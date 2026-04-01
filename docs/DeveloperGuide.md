@@ -144,7 +144,7 @@ The addition mechanism is facilitated by `VersionedAddressBook`. When a user exe
 > If the command fails its execution (e.g., a duplicate module is found), it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
 
 The following sequence diagram shows how an add operation goes through the `Logic` component:
-![img_1.png](img_1.png)
+![img_6.png](img_6.png)
 
 ---
 
@@ -156,7 +156,7 @@ The **`DeleteCommand`** allows for the removal of a module from the list using a
 The deletion mechanism is also facilitated by `VersionedAddressBook`. Upon execution, the `DeleteCommand` iterates through the list to find the matching module. If a match is found and removed, the command calls `Model#commitAddressBook()`. This causes the modified state of the address book—now excluding the deleted module—to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
 
 The following sequence diagram shows how a delete operation goes through the `Logic` component:
-![img_2.png](img_2.png)
+![img_7.png](img_7.png)
 
 ### Yang Han's enhancements
 #### List Feature
@@ -187,10 +187,10 @@ Design Considerations:
 
 #### Sequence Diagram
 `List` command Sequence Diagram
-![img_2.png](img_2.png)
+![img_2.png](list2.png)
 
 `List c/` command Sequence Diagram 
-![img_1.png](img_1.png)
+![img_1.png](list1.png)
 
 ### Christina's enchancements
 #### 4. Mark Feature
