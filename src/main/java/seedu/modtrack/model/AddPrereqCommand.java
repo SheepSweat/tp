@@ -14,8 +14,8 @@ public class AddPrereqCommand extends Command {
     @Override
     public void execute(ArrayList<Mod> list) {
         for (Mod mod : list) {
-            if (mod.getModName().equalsIgnoreCase(modName)) {
-                for (String prereq : prerequisites) {
+            if (mod.getModName().equalsIgnoreCase(this.modName)) {
+                for (String prereq : this.prerequisites) {
                     mod.addPrerequisite(prereq);
                 }
                 System.out.println("Prerequisites updated for " + mod.getModName() + ":");

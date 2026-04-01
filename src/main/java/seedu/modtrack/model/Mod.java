@@ -52,17 +52,17 @@ public class Mod {
     public void setProgressPercentage(int percentage) {
         this.progressPercentage = percentage;
 
-        if (completionType.equals("NORMAL")) {
+        if (this.completionType.equals("NORMAL")) {
             this.isComplete = (percentage == 100);
         }
     }
 
     public int getProgressPercentage() {
-        return progressPercentage;
+        return this.progressPercentage;
     }
 
     public String getCompletionType() {
-        return completionType;
+        return this.completionType;
     }
 
     public void setCompletionType(String completionType) {
@@ -70,8 +70,8 @@ public class Mod {
     }
 
     public void addPrerequisite(String prerequisite) {
-        if (!prerequisites.contains(prerequisite.toUpperCase())) {
-            prerequisites.add(prerequisite.toUpperCase());
+        if (!this.prerequisites.contains(prerequisite.toUpperCase())) {
+            this.prerequisites.add(prerequisite.toUpperCase());
         }
     }
 
@@ -80,37 +80,37 @@ public class Mod {
     }
 
     public ArrayList<String> getPrerequisites() {
-        return prerequisites;
+        return this.prerequisites;
     }
 
     public String getModName() {
-        return modName;
+        return this.modName;
     }
 
     public int getYear() {
-        return year;
+        return this.year;
     }
 
     public int getSemester() {
-        return semester;
+        return this.semester;
     }
 
     public int getModCredits() {
-        return modCredits;
+        return this.modCredits;
     }
 
     public boolean getIsComplete() {
-        return isComplete;
+        return this.isComplete;
     }
 
     public String getDisplayStatus() {
-        if (completionType.equals("EXEMPTED")) {
+        if (this.completionType.equals("EXEMPTED")) {
             return "Exempted";
         }
-        if (completionType.equals("TRANSFERRED")) {
+        if (this.completionType.equals("TRANSFERRED")) {
             return "Transferred";
         }
-        return isComplete ? "Completed" : "Incomplete";
+        return this.isComplete ? "Completed" : "Incomplete";
     }
 
     @Override
@@ -119,23 +119,23 @@ public class Mod {
         modString += "Name: " + this.modName + "\n";
         modString += "Year: YEAR" + this.year + "\n";
         modString += "Semester: SEM" + this.semester + "\n";
-        modString += "Status: " + getDisplayStatus() + "\n";
+        modString += "Status: " + this.getDisplayStatus() + "\n";
         modString += "Progress: " + this.progressPercentage + "%\n";
         modString += "Modular Credits: " + this.modCredits + "\n";
         modString += "Prerequisites: "
-                + (prerequisites.isEmpty() ? "None" : String.join(", ", prerequisites)) + "\n";
+                + (this.prerequisites.isEmpty() ? "None" : String.join(", ", this.prerequisites)) + "\n";
         return modString;
     }
 
     public String toFileFormat() {
-        String prereqText = prerequisites.isEmpty() ? "-" : String.join(",", prerequisites);
-        return (isComplete ? "1 | " : "0 | ")
-                + modName + " | "
-                + year + " | "
-                + semester + " | "
-                + modCredits + " | "
-                + progressPercentage + " | "
-                + completionType + " | "
+        String prereqText = this.prerequisites.isEmpty() ? "-" : String.join(",", this.prerequisites);
+        return (this.isComplete ? "1 | " : "0 | ")
+                + this.modName + " | "
+                + this.year + " | "
+                + this.semester + " | "
+                + this.modCredits + " | "
+                + this.progressPercentage + " | "
+                + this.completionType + " | "
                 + prereqText;
     }
 

@@ -12,7 +12,7 @@ public class Storage {
     private static final String DIRECTORY_PATH = "./data/";
 
     public Storage() {
-        prepareFile();
+        this.prepareFile();
     }
 
     private void prepareFile() {

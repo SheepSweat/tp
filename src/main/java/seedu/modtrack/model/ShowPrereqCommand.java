@@ -12,7 +12,7 @@ public class ShowPrereqCommand extends Command {
     @Override
     public void execute(ArrayList<Mod> list) {
         for (Mod mod : list) {
-            if (mod.getModName().equalsIgnoreCase(modName)) {
+            if (mod.getModName().equalsIgnoreCase(this.modName)) {
                 System.out.println("Prerequisites for " + mod.getModName() + ":");
                 if (mod.getPrerequisites().isEmpty()) {
                     System.out.println("None");
