@@ -6,4 +6,5 @@ list
 unmark n/CS2113
 list
 show grad req
+delete n/CS2113
 bye
