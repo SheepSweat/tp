@@ -12,7 +12,7 @@ public class TransferCommand extends Command {
     @Override
     public void execute(ArrayList<Mod> list) {
         for (Mod mod : list) {
-            if (mod.getModName().equalsIgnoreCase(modName)) {
+            if (mod.getModName().equalsIgnoreCase(this.modName)) {
                 mod.setToTransferred();
                 System.out.println("Module marked as transferred:");
                 System.out.println(mod.getModName());

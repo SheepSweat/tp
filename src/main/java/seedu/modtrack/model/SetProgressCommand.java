@@ -14,8 +14,8 @@ public class SetProgressCommand extends Command {
     @Override
     public void execute(ArrayList<Mod> list) {
         for (Mod mod : list) {
-            if (mod.getModName().equalsIgnoreCase(modName)) {
-                mod.setProgressPercentage(percentage);
+            if (mod.getModName().equalsIgnoreCase(this.modName)) {
+                mod.setProgressPercentage(this.percentage);
                 System.out.println("Updated coursework progress:");
                 System.out.println(mod.getModName() + " -> " + mod.getProgressPercentage() + "%");
                 return;

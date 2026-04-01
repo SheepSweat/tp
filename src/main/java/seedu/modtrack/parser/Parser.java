@@ -10,6 +10,7 @@ import seedu.modtrack.model.ExitCommand;
 import seedu.modtrack.model.ExemptCommand;
 import seedu.modtrack.model.FindCommand;
 import seedu.modtrack.model.ListCommand;
+import seedu.modtrack.model.ListCompareCommand;
 import seedu.modtrack.model.MarkCommand;
 import seedu.modtrack.model.SetProgressCommand;
 import seedu.modtrack.model.ShowGradReqCommand;
@@ -32,27 +33,27 @@ public class Parser {
 
         switch (commandWord) {
         case "add":
-            return parseAdd(arguments);
+            return this.parseAdd(arguments);
         case "delete":
-            return parseDelete(arguments);
+            return this.parseDelete(arguments);
         case "mark":
-            return parseMark(arguments);
+            return this.parseMark(arguments);
         case "unmark":
-            return parseUnmark(arguments);
+            return this.parseUnmark(arguments);
         case "progress":
-            return parseProgress(arguments);
+            return this.parseProgress(arguments);
         case "exempt":
-            return parseExempt(arguments);
+            return this.parseExempt(arguments);
         case "transfer":
-            return parseTransfer(arguments);
+            return this.parseTransfer(arguments);
         case "find":
-            return parseFind(arguments);
+            return this.parseFind(arguments);
         case "prereq":
-            return parsePrereq(arguments);
+            return this.parsePrereq(arguments);
         case "list":
-            return new ListCommand();
+            return this.parseList(arguments);
         case "show":
-            return parseShow(arguments);
+            return this.parseShow(arguments);
         case "exit":
         case "bye":
             return new ExitCommand();
@@ -62,35 +63,35 @@ public class Parser {
     }
 
     private Command parseAdd(String arguments) throws InvalidCommandException {
-        String modName = extractValue(arguments, "n/");
-        String yearText = extractValue(arguments, "y/");
-        String semText = extractValue(arguments, "s/");
+        String modName = this.extractValue(arguments, "n/");
+        String yearText = this.extractValue(arguments, "y/");
+        String semText = this.extractValue(arguments, "s/");
 
-        int year = parseYear(yearText);
-        int semester = parseSemester(semText);
+        int year = this.parseYear(yearText);
+        int semester = this.parseSemester(semText);
 
         int credits = 4;
         return new AddCommand(modName, year, semester, credits);
     }
 
     private Command parseDelete(String arguments) throws InvalidCommandException {
-        String modName = extractValue(arguments, "n/");
+        String modName = this.extractValue(arguments, "n/");
         return new DeleteCommand(modName);
     }
 
     private Command parseMark(String arguments) throws InvalidCommandException {
-        String modName = extractValue(arguments, "n/");
+        String modName = this.extractValue(arguments, "n/");
         return new MarkCommand(modName);
     }
 
     private Command parseUnmark(String arguments) throws InvalidCommandException {
-        String modName = extractValue(arguments, "n/");
+        String modName = this.extractValue(arguments, "n/");
         return new UnmarkCommand(modName);
     }
 
     private Command parseProgress(String arguments) throws InvalidCommandException {
-        String modName = extractValue(arguments, "n/");
-        String progressText = extractValue(arguments, "p/");
+        String modName = this.extractValue(arguments, "n/");
+        String progressText = this.extractValue(arguments, "p/");
 
         int percentage;
         try {
@@ -107,17 +108,17 @@ public class Parser {
     }
 
     private Command parseExempt(String arguments) throws InvalidCommandException {
-        String modName = extractValue(arguments, "n/");
+        String modName = this.extractValue(arguments, "n/");
         return new ExemptCommand(modName);
     }
 
     private Command parseTransfer(String arguments) throws InvalidCommandException {
-        String modName = extractValue(arguments, "n/");
+        String modName = this.extractValue(arguments, "n/");
         return new TransferCommand(modName);
     }
 
     private Command parseFind(String arguments) throws InvalidCommandException {
-        String keyword = extractValue(arguments, "n/");
+        String keyword = this.extractValue(arguments, "n/");
         return new FindCommand(keyword);
     }
 
@@ -131,8 +132,8 @@ public class Parser {
         String rest = parts[1];
 
         if (action.equals("add")) {
-            String modName = extractValue(rest, "n/");
-            String prereqText = extractValue(rest, "p/");
+            String modName = this.extractValue(rest, "n/");
+            String prereqText = this.extractValue(rest, "p/");
             String[] prereqArray = prereqText.split(",");
             ArrayList<String> prereqs = new ArrayList<>();
 
@@ -142,11 +143,22 @@ public class Parser {
 
             return new AddPrereqCommand(modName, prereqs);
         } else if (action.equals("show")) {
-            String modName = extractValue(rest, "n/");
+            String modName = this.extractValue(rest, "n/");
             return new ShowPrereqCommand(modName);
         }
 
         throw new InvalidCommandException("Unknown prereq command.");
+    }
+
+    private Command parseList(String arguments) throws InvalidCommandException {
+        String trimmedArgs = arguments.trim();
+        if (trimmedArgs.contains("c/")) {
+            return new ListCompareCommand();
+        }
+        if (trimmedArgs.isEmpty()) {
+            return new ListCommand();
+        }
+        throw new InvalidCommandException("Unknown list command.");
     }
 
     private Command parseShow(String arguments) throws InvalidCommandException {

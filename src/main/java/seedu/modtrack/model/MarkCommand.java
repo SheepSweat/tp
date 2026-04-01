@@ -12,7 +12,7 @@ public class MarkCommand extends Command {
     @Override
     public void execute(ArrayList<Mod> list) {
         for (Mod mod : list) {
-            if (mod.getModName().equalsIgnoreCase(modName)) {
+            if (mod.getModName().equalsIgnoreCase(this.modName)) {
                 mod.setToDone();
                 System.out.println("Module marked as completed:");
                 System.out.println(mod.getModName());

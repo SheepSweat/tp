@@ -84,7 +84,6 @@ public abstract class Command {
     public boolean isExit() { return this.isExit; }
 }
 ```
-
 #### Design Considerations
 
 **Aspect: How commands interact with the module list**
@@ -159,8 +158,39 @@ The deletion mechanism is also facilitated by `VersionedAddressBook`. Upon execu
 The following sequence diagram shows how a delete operation goes through the `Logic` component:
 ![img_2.png](img_2.png)
 
-### Yang Han's enchancement
-#### 3. List Feature
+### Yang Han's enhancements
+#### List Feature
+
+User inputs `List` `List c/`
+
+The List feature is executed by the `ListCommand.java` (`List`) or the `ListCompareCommand. java` (`List c/`) class.
+It extends from the abstract class `Command` and overrides the `execute()` method.
+
+V1.0 Current implementation:
+The `execute()` method in the `ListCommand` class iterates through the list of modules tracked by the program and prints out
+all modules currently tracked using the `toString()` method of the mod class.
+
+V2.0 implementation:
+The `execute()` method in the `ListCompareCommand` class iterates through the list of modules tracked by the program
+and compares it to a predefined list of all modules required to be completed by a computer engineering student. prints
+output completed and uncompleted modules in 2 separate lists using the `toString()` method of the mod class.
+
+Design Considerations:
+* The list feature is implemented this way because we want to allow the user the ability to view their modules tracked
+  as is or against the modules required to graduate.
+* Under `ListCompareCommand` we compare the list of modules tracked to a predefined list, populated on start up
+  to allow easy updates when there is a change in graduation requirements or for scaling the program to other majors.
+* Two separate classes was chosen as we wanted to a streamlined command class where each command overrides the execute
+  method in their respective command classes.
+* Alternatives considered: Using a single command class and separating the executions by methods within the class.
+  This was rejected as it will cause list to have a different structure from the other command classes causing confusion.
+
+#### Sequence Diagram
+`List` command Sequence Diagram
+![img_2.png](img_2.png)
+
+`List c/` command Sequence Diagram 
+![img_1.png](img_1.png)
 
 ### Christina's enchancements
 #### 4. Mark Feature
@@ -181,28 +211,7 @@ exit
 ```
 ##### Sequence Diagram
 
-```plantuml
-@startuml
-actor User
-participant UI
-participant Parser
-participant ExitCommand
-participant Storage
-
-User -> UI : enter "exit"
-UI -> Parser : parse(input)
-Parser -> ExitCommand : create command
-ExitCommand -> ExitCommand : execute()
-
-alt Unsaved changes exist
-    ExitCommand -> Storage : save(data)
-    Storage --> ExitCommand : success
-end
-
-ExitCommand --> UI : termination signal
-UI --> User : display goodbye message
-@enduml
-```
+![img_4.png](img_4.png)
 The sequence diagram above shows how the exit command is handled:
 1. The user enters the `exit` command
 2. The input is parsed into an `ExitCommand`
@@ -224,23 +233,7 @@ show grad req
 ```
 #### Sequence Diagram
 
-```plantuml
-@startuml
-actor User
-participant UI
-participant Parser
-participant GradCommand
-participant ModList
-
-User -> UI : enter "grad"
-UI -> Parser : parse(input)
-Parser -> GradCommand : create command
-GradCommand -> ModList : retrieve modules
-GradCommand -> GradCommand : compute requirements
-GradCommand --> UI : formatted result
-UI --> User : display remaining requirements
-@enduml
-```
+![img_5.png](img_5.png)
 The sequence diagram illustrates how graduation requirements are displayed:
 1. The user enters the `grad` command
 2. The Parser creates a `GradCommand`

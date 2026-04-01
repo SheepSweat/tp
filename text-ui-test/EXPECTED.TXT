@@ -8,7 +8,9 @@ Name: CS1010
 Year: YEAR1
 Semester: SEM1
 Status: Incomplete
+Progress: 0%
 Modular Credits: 4
+Prerequisites: None
 
 Total modules tracked: 1
 ----------------------------------------------------
@@ -19,7 +21,9 @@ Name: CS2113
 Year: YEAR2
 Semester: SEM2
 Status: Incomplete
+Progress: 0%
 Modular Credits: 4
+Prerequisites: None
 
 Total modules tracked: 2
 ----------------------------------------------------
@@ -32,7 +36,9 @@ Name: CS1010
 Year: YEAR1
 Semester: SEM1
 Status: Incomplete
+Progress: 0%
 Modular Credits: 4
+Prerequisites: None
 
 Now you have 1 mods in the list.
 ----------------------------------------------------
@@ -41,7 +47,9 @@ Name: CS2113
 Year: YEAR2
 Semester: SEM2
 Status: Completed
+Progress: 100%
 Modular Credits: 4
+Prerequisites: None
 
 Module marked as incomplete:
 CS2113
@@ -50,7 +58,9 @@ Name: CS2113
 Year: YEAR2
 Semester: SEM2
 Status: Incomplete
+Progress: 0%
 Modular Credits: 4
+Prerequisites: None
 
 ===== Computer Engineering Graduation Requirements =====
 Total MCs Required: 160
@@ -91,4 +101,17 @@ Engineering Common Curriculum:
 General Education Curriculum:
 - GENXXXX
 - GECXXXX
+----------------------------------------------------
+Noted. I've removed this mod:
+
+Name: CS2113
+Year: YEAR2
+Semester: SEM2
+Status: Incomplete
+Progress: 0%
+Modular Credits: 4
+Prerequisites: None
+
+Now you have 0 mods in the list.
+----------------------------------------------------
 Bye. Hope to see you again soon!

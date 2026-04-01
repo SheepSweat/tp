@@ -15,7 +15,7 @@ public class FindCommand extends Command {
 
         System.out.println("Matching modules:");
         for (Mod mod : list) {
-            if (mod.getModName().toLowerCase().contains(keyword)) {
+            if (mod.getModName().toLowerCase().contains(this.keyword)) {
                 System.out.println("--------------------");
                 System.out.print(mod);
                 found = true;
