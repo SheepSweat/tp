@@ -31,33 +31,33 @@ public class Parser {
         String arguments = parts.length > 1 ? parts[1].trim() : "";
 
         switch (commandWord) {
-            case "add":
-                return this.parseAdd(arguments);
-            case "delete":
-                return this.parseDelete(arguments);
-            case "mark":
-                return this.parseMark(arguments);
-            case "unmark":
-                return this.parseUnmark(arguments);
-            case "progress":
-                return this.parseProgress(arguments);
-            case "exempt":
-                return this.parseExempt(arguments);
-            case "transfer":
-                return this.parseTransfer(arguments);
-            case "find":
-                return this.parseFind(arguments);
-            case "prereq":
-                return this.parsePrereq(arguments);
-            case "list":
-                return new ListCommand();
-            case "show":
-                return this.parseShow(arguments);
-            case "exit":
-            case "bye":
-                return new ExitCommand();
-            default:
-                throw new InvalidCommandException("Invalid command.");
+        case "add":
+            return this.parseAdd(arguments);
+        case "delete":
+            return this.parseDelete(arguments);
+        case "mark":
+            return this.parseMark(arguments);
+        case "unmark":
+            return this.parseUnmark(arguments);
+        case "progress":
+            return this.parseProgress(arguments);
+        case "exempt":
+            return this.parseExempt(arguments);
+        case "transfer":
+            return this.parseTransfer(arguments);
+        case "find":
+            return this.parseFind(arguments);
+        case "prereq":
+            return this.parsePrereq(arguments);
+        case "list":
+            return new ListCommand();
+        case "show":
+            return this.parseShow(arguments);
+        case "exit":
+        case "bye":
+            return new ExitCommand();
+        default:
+            throw new InvalidCommandException("Invalid command.");
         }
     }
 
