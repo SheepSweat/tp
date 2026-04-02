@@ -194,7 +194,109 @@ Design Considerations:
 
 ### Christina's enchancements
 #### 4. Mark Feature
+
+The **`MarkCommand`** allows the user to mark a tracked module as completed by specifying its module code.
+
+**Implementation**
+
+The marking mechanism is facilitated by the `MarkCommand` class. When a user executes the `mark` command, the `execute()` method iterates through the tracked module list to find a module whose name matches the provided `modName`.
+
+If a matching module is found:
+- its completion status is updated using `Mod#setToDone()`
+- a confirmation message is printed to the user
+
+If no matching module is found, the system informs the user that the module does not exist in the current tracked list.
+
+This feature is important because it allows users to update their academic progress after completing a module.
+
+**Example:**
+```text
+mark n/CS2113
+```
+
+##### Design Considerations
+
+**Aspect: How modules are identified for marking**
+
+* **Alternative 1 (Current implementation):** Identify the module by its module code (`modName`) using a linear search through the list.
+    * **Pros:** Simple and easy to understand for the current scope of the project.
+    * **Cons:** Less efficient for very large module lists.
+* **Alternative 2:** Use an index-based marking system (e.g. `mark 3`) or a `HashMap<String, Mod>` for faster lookup.
+    * **Pros:** Potentially faster lookup and simpler internal retrieval.
+    * **Cons:** Less intuitive for users, and would require additional synchronization between displayed indices and stored data.
+
+**Reasoning:**  
+The current implementation was chosen because module codes such as `CS2113` are already unique and meaningful to the user, making command usage more natural in a CLI-based academic tracker.
+
+##### Sequence Diagram
+
+![img_2.png](img_2.png)
+
+The sequence diagram above shows how the `mark` command is handled:
+1. The user enters the `mark` command
+2. The `Parser` creates a `MarkCommand`
+3. `MarkCommand` iterates through the tracked module list
+4. If a matching module is found, its completion status is updated
+5. The updated list is saved through the `Storage` component
+
+---
+
 #### 5. Unmark Feature
+
+The **`UnmarkCommand`** allows the user to reverse a previously completed module and set it back to incomplete.
+
+**Implementation**
+
+The unmarking mechanism is facilitated by the `UnmarkCommand` class. It follows a similar implementation pattern to `MarkCommand`.
+
+When a user executes the `unmark` command:
+- the system searches the module list for a module matching the provided `modName`
+- if found, the module’s completion status is reset using `Mod#setToUndone()`
+- the user is informed that the module has been marked as incomplete again
+
+This feature is useful when users make accidental updates or wish to revise their academic planning.
+
+**Example:**
+```text
+unmark n/CS2113
+```
+
+##### Design Considerations
+
+**Aspect: Whether to merge mark and unmark into one command**
+
+* **Alternative 1 (Current implementation):** Implement `mark` and `unmark` as two separate command classes.
+    * **Pros:** Clear separation of responsibilities and more intuitive command structure.
+    * **Cons:** Slight code duplication due to similar search logic.
+* **Alternative 2:** Use a single generic status command such as `status n/CS2113 s/incomplete`.
+    * **Pros:** More extensible for future status types.
+    * **Cons:** Adds unnecessary parsing complexity and makes the command less user-friendly.
+
+**Reasoning:**  
+The current implementation was chosen to keep user interactions simple and explicit. Since the application is intended for fast CLI usage, direct commands such as `mark` and `unmark` are easier for users to remember and use.
+
+##### Sequence Diagram
+
+![img_8.png](img_8.png)
+
+The sequence diagram above shows how the `unmark` command is handled:
+1. The user enters the `unmark` command
+2. The `Parser` creates an `UnmarkCommand`
+3. `UnmarkCommand` iterates through the tracked module list
+4. If a matching module is found, its completion status is reset
+5. The updated list is saved through the `Storage` component
+
+##### UML Class Diagram
+
+![img_9.png](img_9.png)
+
+The class diagram above illustrates the command-based architecture used in ModTrack. `ModTrack` acts as the central controller of the application and coordinates interactions between the `Parser`, `Storage`, and the module list. The `Parser` is responsible for converting raw user input into a concrete subclass of the abstract `Command` class.
+
+The `Command` abstraction allows different user actions to be encapsulated into separate classes such as `MarkCommand`, `UnmarkCommand`, `ExitCommand`, and `ShowGradReqCommand`. This design promotes modularity by ensuring that each command handles only one responsibility.
+
+Besides `mark` and `unmark`, the application also supports other core command interactions such as `exit` and `show grad req`. These commands follow the same command-based design architecture, where the `Parser` maps user input into a specific subclass of `Command`, and the `ModTrack` main loop executes the corresponding action.
+
+This design allows the application to remain modular and scalable, as future commands can be introduced with minimal changes to the overall control flow.
 
 ### Ang Lee's enhancements
 #### 6. Exit Feature
