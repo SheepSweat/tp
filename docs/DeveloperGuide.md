@@ -155,6 +155,8 @@ The Parser ensures that invalid inputs are handled gracefully by throwing approp
 Class Diagram:
 ![img_10.png](ParserClassDiagram.png)
 
+
+
 ## Implementation
 #### 1. Add Feature
 The **`AddCommand`** facilitates the addition of new modules to the application by storing details such as `name`, `year`, `semester`, and `credits`.
@@ -162,6 +164,47 @@ The **`AddCommand`** facilitates the addition of new modules to the application 
 **Implementation**
 
 > If the command fails its execution (e.g., a duplicate module is found), the `AddCommand` returns early. Consequently, the list remains unchanged and the `ModTrack` main loop will skip the save process or save the unmodified state, ensuring no invalid data is persisted.
+
+**Example:**
+
+```text
+add n/CS2113 y/2 s/1 c/4
+```
+
+##### Parsing Logic
+
+The `Parser` identifies the `add` keyword and extracts:
+
+* the module name from the `n/` prefix
+* the academic year from the `y/` prefix
+* the semester from the `s/` prefix
+* the modular credits from the `c/` prefix
+
+The extracted values are used to construct an `AddCommand` object, which is then passed to the main execution loop.
+
+##### Class Interaction
+
+* `Parser` constructs the `AddCommand`
+* `AddCommand` validates the input against the existing `ArrayList<Mod>`
+* `Mod` represents the newly created module object
+* `Storage` persists the updated module list after successful execution
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* duplicate module codes
+* invalid or missing command arguments rejected by the parser
+* failed addition does not modify the tracked list
+
+##### Current Limitation
+
+The current implementation relies on linear search to detect duplicate module codes. This is acceptable for the current project scope, but may become less efficient if the module list grows significantly.
+
+##### Cross-Feature Interaction
+
+The add feature provides the base module objects used by all other commands. Features such as `mark`, `unmark`, `transfer`, `addprereq`, and `showprereq` depend on the module having already been added to the tracked list.
+
 
 
 The following sequence diagram shows how an add operation goes through the `Logic` component:
@@ -176,6 +219,42 @@ The **`DeleteCommand`** allows for the removal of a module from the list using a
 
 The deletion mechanism is managed by the **Logic** component and persisted via the **Storage** component. Upon execution, the `DeleteCommand` iterates through the `ArrayList<Mod>` to find the matching module. If a match is found and removed, the main loop in `ModTrack` immediately calls `Storage#save()` to overwrite the data file with the updated list, ensuring the change is persisted to the disk.
 
+**Example:**
+
+```text
+delete n/CS2113
+```
+
+##### Parsing Logic
+
+The `Parser` identifies the `delete` keyword and extracts the module name from the `n/` prefix.
+
+A `DeleteCommand` object is then created and passed to the execution loop.
+
+##### Class Interaction
+
+* `Parser` constructs the `DeleteCommand`
+* `DeleteCommand` searches through the `ArrayList<Mod>`
+* the matching `Mod` object is removed from the list if found
+* `Storage` persists the updated module list after execution
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* deletion of a non-existent module
+* failed deletion leaves the tracked list unchanged
+* parser rejects malformed input before execution
+
+##### Current Limitation
+
+The current implementation removes modules solely by module code and does not check whether other features, such as prerequisite tracking, still reference the deleted module as a prerequisite string.
+
+##### Cross-Feature Interaction
+
+Deleting a module may affect commands such as `showprereq`, `transfer`, `mark`, and `unmark`, because those commands rely on the module continuing to exist in the tracked list. If a deleted module was previously referenced elsewhere as a prerequisite, that reference remains as plain string data.
+
+
 The following sequence diagram shows how a delete operation goes through the `Logic` component:
 ![deleteCommandDiagram.png](deleteCommandDiagram.png)
 
@@ -189,10 +268,42 @@ The clear mechanism is managed by the **Logic** component and persisted via the 
 > [!NOTE]
 > This operation is irreversible once the `Storage#save()` method is called, as the existing `ModTrack.txt` file is overwritten with a blank state.
 
+
+**Example:**
+
+```text
+clear
+```
+
+##### Parsing Logic
+
+The `Parser` identifies the `clear` keyword and constructs a `ClearCommand` object with no additional arguments.
+
+##### Class Interaction
+
+* `Parser` constructs the `ClearCommand`
+* `ClearCommand` invokes `clear()` on the `ArrayList<Mod>`
+* `Storage` persists the cleared state after execution
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* clearing an already empty list
+* no partial state remains after successful execution
+
+##### Current Limitation
+
+The current implementation does not request a confirmation prompt before wiping all tracked data.
+
+##### Cross-Feature Interaction
+
+This command resets all data used by all other commands. After `clear`, commands such as `mark`, `transfer`, `showprereq`, and `list c/` will operate on an empty module list until modules are added again.
+
 The following sequence diagram shows how a clear operation goes through the system:
 ![img_10.png](ClearCommandDiagram.png)
 
-#### List Feature
+#### 4. List Feature
 
 User inputs `List` `List c/`
 
@@ -218,6 +329,37 @@ Design Considerations:
 * Alternatives considered: Using a single command class and separating the executions by methods within the class.
   This was rejected as it will cause list to have a different structure from the other command classes causing confusion.
 
+##### Parsing Logic
+
+The `Parser` identifies the `list` keyword and determines whether the compare modifier `c/` is present:
+
+* if absent, it constructs a `ListCommand`
+* if present, it constructs a `ListCompareCommand`
+
+##### Class Interaction
+
+* `Parser` constructs either `ListCommand` or `ListCompareCommand`
+* `ListCommand` reads from the `ArrayList<Mod>` and prints tracked modules
+* `ListCompareCommand` reads from both the `ArrayList<Mod>` and `ReferenceList`
+* `Mod` provides display-ready information through `toString()` and status-related methods
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* empty tracked module lists
+* tracked modules that are completed, incomplete, or transferred
+* comparison against predefined reference requirements
+
+##### Current Limitation
+
+The comparison feature depends on a predefined reference list and is currently specific to the configured degree requirements. Expanding to other programmes would require updating the reference data source.
+
+##### Cross-Feature Interaction
+
+The list features reflect the effects of commands such as `add`, `delete`, `mark`, `unmark`, and `transfer`. In particular, transferred modules appear as completed for requirement comparison purposes.
+
+
 #### Sequence Diagram
 `List` command Sequence Diagram
 ![img_2.png](list2.png)
@@ -225,7 +367,7 @@ Design Considerations:
 `List c/` command Sequence Diagram 
 ![img_1.png](list1.png)
 
-#### 4. Mark Feature
+#### 5. Mark Feature
 
 The **`MarkCommand`** allows the user to mark a tracked module as completed by specifying its module code.
 
@@ -261,8 +403,7 @@ mark n/CS2113
 The current implementation was chosen because module codes such as `CS2113` are already unique and meaningful to the user, making command usage more natural in a CLI-based academic tracker.
 
 ##### Sequence Diagram
-
-![img_2.png](img_2.png)
+![img_13.png](img_13.png)
 
 The sequence diagram above shows how the `mark` command is handled:
 1. The user enters the `mark` command
@@ -273,7 +414,7 @@ The sequence diagram above shows how the `mark` command is handled:
 
 ---
 
-#### 5. Unmark Feature
+#### 6. Unmark Feature
 
 The **`UnmarkCommand`** allows the user to reverse a previously completed module and set it back to incomplete.
 
@@ -307,9 +448,37 @@ unmark n/CS2113
 **Reasoning:**  
 The current implementation was chosen to keep user interactions simple and explicit. Since the application is intended for fast CLI usage, direct commands such as `mark` and `unmark` are easier for users to remember and use.
 
-##### Sequence Diagram
+##### Parsing Logic
 
-![img_8.png](img_8.png)
+The `Parser` identifies the `mark` keyword and extracts the module name from the `n/` prefix.
+
+A `MarkCommand` object is then created and passed to the execution loop.
+
+##### Class Interaction
+
+* `Parser` constructs the `MarkCommand`
+* `MarkCommand` searches through the `ArrayList<Mod>`
+* `Mod` updates its completion status through `setToDone()`
+* `Storage` persists the updated module list after execution
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* non-existent module names
+* repeated marking of an already completed module
+* parser rejects malformed user input before execution
+
+##### Current Limitation
+
+The current implementation uses linear search to locate the module. It also does not enforce prerequisite completion before a module can be marked as done.
+
+##### Cross-Feature Interaction
+
+The mark feature directly affects `list c/`, because completed modules count toward graduation requirement comparison. It also interacts conceptually with `showprereq`, as users may use prerequisite information before deciding to mark a module completed.
+
+##### Sequence Diagram
+![img_14.png](img_14.png)
 
 The sequence diagram above shows how the `unmark` command is handled:
 1. The user enters the `unmark` command
@@ -330,7 +499,7 @@ Besides `mark` and `unmark`, the application also supports other core command in
 
 This design allows the application to remain modular and scalable, as future commands can be introduced with minimal changes to the overall control flow.
 
-#### 6. Exit Feature
+#### 7. Exit Feature
 
 The exit mechanism is facilitated by the `ExitCommand` class.
 
@@ -342,6 +511,36 @@ The exit mechanism is facilitated by the `ExitCommand` class.
 ```
 exit
 ```
+
+##### Parsing Logic
+
+The `Parser` identifies the `unmark` keyword and extracts the module name from the `n/` prefix.
+
+An `UnmarkCommand` object is then created and passed to the execution loop.
+
+##### Class Interaction
+
+* `Parser` constructs the `UnmarkCommand`
+* `UnmarkCommand` searches through the `ArrayList<Mod>`
+* `Mod` updates its completion status through `setToUndone()`
+* `Storage` persists the updated module list after execution
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* non-existent module names
+* repeated unmarking of a module already marked incomplete
+* parser rejects malformed input before execution
+
+##### Current Limitation
+
+The current implementation does not differentiate between reversing a standard completion and reversing a transferred status unless the underlying `Mod` methods explicitly do so.
+
+##### Cross-Feature Interaction
+
+The unmark feature directly affects `list c/` by removing the module from the set of completed requirements. It also interacts with `transfer`, since both features update completion-related state and should remain logically consistent in the `Mod` class.
+
 ##### Sequence Diagram
 
 ![img_4.png](img_4.png)
@@ -352,7 +551,7 @@ The sequence diagram above shows how the exit command is handled:
 4. If necessary, data is saved via the Storage component
 5. The system terminates gracefully and displays a farewell message
 
-#### 7. Show Graduation Requirement Feature
+#### 8. Show Graduation Requirement Feature
 This feature displays the graduation requirements tracked by the system.
 
 **How it works:**
@@ -364,6 +563,34 @@ This feature displays the graduation requirements tracked by the system.
 ```
 show grad req
 ```
+
+##### Parsing Logic
+
+The `Parser` identifies the graduation requirement command keyword and constructs the corresponding command object.
+
+##### Class Interaction
+
+* `Parser` constructs the graduation requirement command
+* the command reads from the `ArrayList<Mod>`
+* the command compares tracked modules against `ReferenceList`
+* output is printed to the user based on matched and unmatched requirements
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* empty tracked module lists
+* partially completed requirement sets
+* transferred modules contributing toward completed requirements when treated as completed internally
+
+##### Current Limitation
+
+The displayed graduation requirement logic is tied to the predefined requirement structure and may need refactoring if support for multiple degree programmes is added.
+
+##### Cross-Feature Interaction
+
+This feature depends heavily on `add`, `delete`, `mark`, `unmark`, and `transfer`, because all of those commands affect whether a module appears as fulfilled or outstanding in the requirement view.
+
 #### Sequence Diagram
 
 ![img_5.png](img_5.png)
@@ -392,6 +619,199 @@ This application provides:
 * **Academic Logging:** A historical record of modules completed, including year, semester, and credit details.
 * **Efficiency:** Rapid data entry and retrieval using short, optimized commands specifically designed for busy engineering students.
 * **Clarity:** Instant feedback on current progress, helping students ensure they are on track to graduate by their target date without needing to manually cross-reference various PDFs or websites.
+
+#### 9. Add Prerequisite Feature
+
+The **`AddPrereqCommand`** allows the user to add one or more prerequisite modules to an existing tracked module.
+
+**Implementation**
+
+The prerequisite-adding mechanism is facilitated by the `AddPrereqCommand` class. When a user executes the `addprereq` command, the `execute()` method iterates through the module list to find a module whose name matches the provided `modName` (case-insensitive).
+
+If a matching module is found:
+
+* each prerequisite in the provided list is added to the module
+* duplicate prerequisites are ignored to prevent redundancy
+
+If no matching module is found:
+
+* the system does not modify the list
+
+This feature allows users to track module dependencies for better academic planning.
+
+**Example:**
+
+```text
+addprereq n/CG2023 p/CG1111,CS1010
+```
+
+##### Parsing Logic
+
+The `Parser` identifies the `addprereq` keyword and extracts:
+
+* the module name from the `n/` prefix
+* a list of prerequisite module codes from the `p/` prefix
+
+The extracted values are used to construct an `AddPrereqCommand` object, which is then passed to the main execution loop.
+
+##### Class Interaction
+
+* `Parser` constructs the `AddPrereqCommand`
+* `AddPrereqCommand` searches through the `ArrayList<Mod>`
+* `Mod` handles prerequisite storage via its internal list
+* after execution, the updated list is persisted by the `Storage` component
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* module names entered in lowercase or mixed case
+* duplicate prerequisite insertion (ignored)
+* non-existent module names (no modification made)
+* empty prerequisite lists (no changes applied)
+
+##### Current Limitation
+
+The current implementation stores prerequisites as strings and does not verify whether each prerequisite module itself exists in the tracked module list or in the reference list.
+
+##### Cross-Feature Interaction
+
+The `addprereq` feature complements `showprereq` by supplying the prerequisite data later displayed to the user. It also interacts conceptually with `mark` and `transfer`, because prerequisite information may influence a user's decision to complete or transfer a module even though the current implementation does not enforce eligibility checks.
+
+##### Sequence Diagram
+![img_12.png](img_12.png)
+
+#### 9. Show Prerequisite Feature
+
+The **`ShowPrereqCommand`** allows the user to view all prerequisites of a specified module.
+
+**Implementation**
+
+The display mechanism is facilitated by the `ShowPrereqCommand` class. When executed, the command searches the module list using case-insensitive matching.
+
+If the module is found:
+
+* the system prints `Prerequisites for <modName>:`
+* if prerequisites exist, they are printed as a comma-separated list
+* if no prerequisites exist, `None` is displayed
+
+If no matching module is found:
+
+* the system prints `Module not found.`
+
+This feature helps users quickly check module requirements.
+
+**Example:**
+
+```text
+showprereq n/CS2113
+```
+
+**Output:**
+
+```text
+Prerequisites for CS2113:
+CS1010, CS2040C
+```
+
+##### Parsing Logic
+
+The `Parser` identifies the `showprereq` keyword and extracts the module name from the `n/` prefix.
+
+A `ShowPrereqCommand` object is then created and passed to the execution loop.
+
+##### Class Interaction
+
+* `Parser` constructs the `ShowPrereqCommand`
+* `ShowPrereqCommand` searches through the `ArrayList<Mod>`
+* `Mod` provides access to its stored prerequisite list
+* Output is printed directly via the command (UI layer interaction)
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* case-insensitive module name matching
+* modules with no prerequisites (prints `None`)
+* non-existent module names (prints `Module not found.`)
+
+##### Current Limitation
+
+The current implementation only displays direct prerequisites and does not recursively display prerequisite chains.
+
+##### Cross-Feature Interaction
+
+This feature depends directly on `addprereq`, since prerequisite data must first be stored before it can be displayed. It also supports user decisions around `mark`, `transfer`, and semester planning by making dependency information visible.
+
+##### Sequence Diagram
+![img_11.png](img_11.png)
+
+#### 10. Transfer Feature
+
+The **`TransferCommand`** allows the user to mark a module as transferred, treating it as completed.
+
+**Implementation**
+
+The transfer mechanism is facilitated by the `TransferCommand` class. When executed, the command searches for a module using case-insensitive matching.
+
+If the module is found:
+
+* the module is marked as completed
+* its completion type is set to `"TRANSFERRED"`
+* its display status is updated to `"Transferred"`
+* a confirmation message is printed
+
+If no matching module is found:
+
+* the system prints `Module not found.`
+* no changes are made
+
+This feature is useful for representing transferred or exempted modules.
+
+**Example:**
+
+```text
+transfer n/CS2040C
+```
+
+**Output:**
+
+```text
+Module marked as transferred:
+CS2040C
+```
+
+##### Parsing Logic
+
+The `Parser` identifies the `transfer` keyword and extracts the module name from the `n/` prefix.
+
+A `TransferCommand` object is then created and passed to the execution loop.
+
+##### Class Interaction
+
+* `Parser` constructs the `TransferCommand`
+* `TransferCommand` searches through the `ArrayList<Mod>`
+* `Mod` updates its internal state (`isComplete`, `completionType`, display status)
+* `Storage` persists the updated module list after execution
+
+##### Edge Cases and Error Handling
+
+The feature currently handles the following cases:
+
+* case-insensitive module name matching
+* attempting to transfer a non-existent module (no state change)
+* ensuring transferred modules are consistently marked as completed internally
+
+##### Current Limitation
+
+The current implementation treats transferred modules as completed, but does not store any additional metadata such as transfer source, approval status, or institution of origin.
+
+##### Cross-Feature Interaction
+
+The transfer feature directly affects `list c/` and graduation requirement display, because transferred modules count as completed. It also interacts with prerequisite-related planning, because a transferred prerequisite module may satisfy a dependency even though it was not completed locally.
+
+##### Sequence Diagram
+![img_10.png](img_10.png)
 
 ## User Stories
 
