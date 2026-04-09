@@ -66,6 +66,6 @@ class UnmarkCommandTest {
         command.execute(this.modList, this.ui);
 
         String output = this.outContent.toString().trim();
-        assertTrue(output.contains("Module not found."), "Should handle missing modules gracefully");
+        assertTrue(output.contains("No modules found in the list."), "Should handle missing modules gracefully");
     }
 }

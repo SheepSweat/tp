@@ -71,7 +71,7 @@ class FindCommandTest {
         assertTrue(output.contains("Matching modules:"),
                 "The header 'Matching modules:' was not printed.");
 
-        assertTrue(output.contains("No matching module found."),
+        assertTrue(output.contains("No modules found in the list."),
                 "The 'not found' feedback message was missing for a non-existent keyword.");
     }
 }

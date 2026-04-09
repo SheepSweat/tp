@@ -69,6 +69,6 @@ public class TransferCommandTest {
 
         // Verify feedback
         String output = this.outContent.toString();
-        assertTrue(output.contains("Module not found."));
+        assertTrue(output.contains("No modules found in the list."));
     }
 }

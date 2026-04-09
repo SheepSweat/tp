@@ -59,7 +59,7 @@ public class ShowPrereqCommandTest {
         command.execute(this.list, this.ui);
 
         String output = this.outContent.toString();
-        assertTrue(output.contains("Module not found."));
+        assertTrue(output.contains("No modules found in the list."));
     }
 
     @Test

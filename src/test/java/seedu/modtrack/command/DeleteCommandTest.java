@@ -69,7 +69,7 @@ public class DeleteCommandTest {
 
         // Verify error message
         String output = this.outContent.toString();
-        assertTrue(output.contains("Module not found."));
+        assertTrue(output.contains("No modules found in the list."));
     }
 
     @Test
@@ -79,6 +79,6 @@ public class DeleteCommandTest {
         command.execute(emptyList, this.ui);
 
         String output = this.outContent.toString();
-        assertTrue(output.contains("Module not found."));
+        assertTrue(output.contains("No modules found in the list."));
     }
 }

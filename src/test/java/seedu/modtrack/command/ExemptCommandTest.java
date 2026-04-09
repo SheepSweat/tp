@@ -72,6 +72,6 @@ public class ExemptCommandTest {
 
         // Verify error message
         String output = this.outContent.toString();
-        assertTrue(output.contains("Module not found."), "Should print error message when mod is missing.");
+        assertTrue(output.contains("No modules found in the list."), "Should print error message when mod is missing.");
     }
 }
