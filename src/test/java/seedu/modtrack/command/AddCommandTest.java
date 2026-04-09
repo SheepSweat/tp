@@ -1,4 +1,4 @@
-package seedu.modtrack.model;
+package seedu.modtrack.command;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -82,5 +82,14 @@ public class AddCommandTest {
 
         String output = this.outContent.toString();
         assertTrue(output.contains("Total modules tracked: 2"));
+    }
+
+    @Test
+    public void execute_customCredits_addsWithCorrectCredits() {
+        // Testing a 2MC module like a DYOM or specific lab
+        AddCommand command = new AddCommand("CS2113", 2, 1, 2);
+        command.execute(list);
+
+        assertEquals(2, list.get(0).getModCredits(), "Module should be saved with 2 MCs");
     }
 }

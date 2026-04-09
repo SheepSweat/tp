@@ -1,4 +1,4 @@
-package seedu.modtrack.model;
+package seedu.modtrack.command;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

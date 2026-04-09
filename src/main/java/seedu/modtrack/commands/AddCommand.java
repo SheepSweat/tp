@@ -6,7 +6,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AddCommand extends Command {
-    // Initialize Logger for tracking internal behavior
     private static final Logger logger = Logger.getLogger(AddCommand.class.getName());
 
     private String modName;
@@ -15,9 +14,9 @@ public class AddCommand extends Command {
     private int modCredits;
 
     public AddCommand(String name, int year, int semester, int credits) {
-        // Assertions verify the Parser's logic during development
         assert name != null && !name.trim().isEmpty() : "Module name cannot be null or empty";
         assert year >= 1 && year <= 6 : "Year should be within university range";
+        assert credits == 2 || credits == 4 : "Module credits must be 2 or 4";
 
         this.modName = name;
         this.year = year;

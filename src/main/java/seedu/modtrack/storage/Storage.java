@@ -24,23 +24,16 @@ public class Storage {
                 folder.mkdir();
             }
 
-            assert folder.exists() : "Failed to create directory";
-
             File file = new File(FILE_PATH);
             if (!file.exists()) {
                 file.createNewFile();
             }
-
-            assert file.exists() : "Failed to create file";
-
         } catch (IOException e) {
             System.out.println("Error creating storage: " + e.getMessage());
         }
     }
 
     public void save(ArrayList<Mod> list) throws IOException {
-        assert list != null : "Mod list cannot be null";
-
         try (FileWriter fw = new FileWriter(FILE_PATH)) {
             for (Mod mod : list) {
                 fw.write(mod.toFileFormat() + System.lineSeparator());
@@ -50,99 +43,46 @@ public class Storage {
 
     public ArrayList<Mod> load() {
         ArrayList<Mod> list = new ArrayList<>();
+        File file = new File(FILE_PATH);
 
-        try {
-            File file = new File(FILE_PATH);
-            Scanner scanner = new Scanner(file);
-
+        try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
-
                 if (line.isEmpty()) {
                     continue;
                 }
 
-                assert line.contains("|") : "Invalid storage format: missing delimiter";
-
                 String[] parts = line.split("\\s*\\|\\s*");
 
-                if (parts.length == 5) {
-                    list.add(this.parseLegacyFivePart(parts));
-                } else if (parts.length == 7 || parts.length == 8) {
-                    list.add(this.parseCurrentSevenPart(parts));
+                // Strictly enforce 7 parts
+                if (parts.length == 7) {
+                    list.add(parseLine(parts));
+                } else {
+                    System.out.println("Skipping malformed line: " + line);
                 }
             }
-
-            scanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("Storage file not found.");
-        } catch (NumberFormatException e) {
-            System.out.println("Storage file contains invalid numeric data.");
         } catch (Exception e) {
             System.out.println("Error loading storage: " + e.getMessage());
         }
         return list;
     }
 
-    private Mod parseLegacyFivePart(String[] parts) {
+    private Mod parseLine(String[] parts) {
         String status = parts[0];
         String name = parts[1];
-
-        assert !name.isEmpty() : "Module name cannot be empty";
-
         int year = Integer.parseInt(parts[2]);
         int semester = Integer.parseInt(parts[3]);
         int credits = Integer.parseInt(parts[4]);
-
-        assert year > 0 : "Year must be positive";
-        assert semester == 1 || semester == 2 : "Invalid semester";
-        assert credits > 0 : "Credits must be positive";
-
-        Mod mod = new Mod(name, year, semester, credits);
-        if (status.equals("1")) {
-            mod.setToDone();
-        }
-        return mod;
-    }
-
-    private Mod parseCurrentSevenPart(String[] parts) {
-        String status = parts[0];
-        String name = parts[1];
-
-        assert !name.isEmpty() : "Module name cannot be empty";
-
-        int year = Integer.parseInt(parts[2]);
-        int semester = Integer.parseInt(parts[3]);
-        int credits = Integer.parseInt(parts[4]);
-
-        String completionType;
-        String prereqText;
-
-        assert year > 0 : "Year must be positive";
-        assert semester == 1 || semester == 2 : "Invalid semester";
-        assert credits > 0 : "Credits must be positive";
-
-        if (parts.length == 7) {
-            completionType = parts[5];
-            prereqText = parts[6];
-        } else { // 8 parts
-            int progress = Integer.parseInt(parts[5]); // you can use or ignore this
-            completionType = parts[6];
-            prereqText = parts[7];
-
-            assert progress >= 0 && progress <= 100 : "Progress percentage must be between 0 and 100";
-            assert completionType.equals("NORMAL") || completionType.equals("EXEMPTED") 
-                    || completionType.equals("TRANSFERRED")
-                    : "Invalid completion type";
-            assert prereqText != null : "Prerequisite text cannot be null";
-        }
+        String completionType = parts[5];
+        String prereqText = parts[6];
 
         Mod mod = new Mod(name, year, semester, credits);
 
         if (status.equals("1")) {
             mod.setToDone();
         }
-
         mod.setCompletionType(completionType);
         mod.setPrerequisites(Mod.parsePrerequisites(prereqText));
 

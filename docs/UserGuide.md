@@ -86,7 +86,7 @@ Format: `exit`
 
 | Action | Format | Example |
 |--------|--------|---------|
-| **Add Module** | `add n/NAME y/YEAR s/SEM` | `add n/CS2113 y/2 s/SEM1` |
+| **Add Module** | `add n/NAME y/YEAR s/SEM [c/CREDITS]` | `add n/CS2113 y/2 s/1 c/4` |
 | **Delete Module** | `delete n/NAME` | `delete n/CS2113` |
 | **Mark Complete** | `mark n/NAME` | `mark n/CS2113` |
 | **Unmark** | `unmark n/NAME` | `unmark n/CS2113` |

@@ -1,4 +1,4 @@
-package seedu.modtrack.model;
+package seedu.modtrack.command;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +45,6 @@ class FindCommandTest {
         assertTrue(output.contains("Year: YEAR2"), "Year field formatted incorrectly");
         assertTrue(output.contains("Semester: SEM1"), "Semester field missing");
         assertTrue(output.contains("Status: Incomplete"), "Status field missing");
-        assertTrue(output.contains("Progress: 0%"), "Progress field missing");
         assertTrue(output.contains("Modular Credits: 4"), "Credits field missing");
     }
 

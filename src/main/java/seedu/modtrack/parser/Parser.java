@@ -13,7 +13,6 @@ import seedu.modtrack.commands.FindCommand;
 import seedu.modtrack.commands.ListCommand;
 import seedu.modtrack.commands.ListCompareCommand;
 import seedu.modtrack.commands.MarkCommand;
-import seedu.modtrack.commands.SetProgressCommand;
 import seedu.modtrack.commands.ShowGradReqCommand;
 import seedu.modtrack.commands.ShowPrereqCommand;
 import seedu.modtrack.commands.TransferCommand;
@@ -41,8 +40,6 @@ public class Parser {
             return this.parseMark(arguments);
         case "unmark":
             return this.parseUnmark(arguments);
-        case "progress":
-            return this.parseProgress(arguments);
         case "exempt":
             return this.parseExempt(arguments);
         case "transfer":
@@ -70,10 +67,23 @@ public class Parser {
         String yearText = this.extractValue(arguments, "y/");
         String semText = this.extractValue(arguments, "s/");
 
+        // Check if c/ is present, otherwise default to 4
+        int credits = 4;
+        if (arguments.contains("c/")) {
+            try {
+                credits = Integer.parseInt(this.extractValue(arguments, "c/"));
+            } catch (NumberFormatException e) {
+                throw new InvalidCommandException("Module credits must be a number (2 or 4).");
+            }
+        }
+
+        if (credits != 2 && credits != 4) {
+            throw new InvalidCommandException("Module credits must be either 2 or 4.");
+        }
+
         int year = this.parseYear(yearText);
         int semester = this.parseSemester(semText);
 
-        int credits = 4;
         return new AddCommand(modName, year, semester, credits);
     }
 
@@ -90,24 +100,6 @@ public class Parser {
     private Command parseUnmark(String arguments) throws InvalidCommandException {
         String modName = this.extractValue(arguments, "n/");
         return new UnmarkCommand(modName);
-    }
-
-    private Command parseProgress(String arguments) throws InvalidCommandException {
-        String modName = this.extractValue(arguments, "n/");
-        String progressText = this.extractValue(arguments, "p/");
-
-        int percentage;
-        try {
-            percentage = Integer.parseInt(progressText);
-        } catch (NumberFormatException e) {
-            throw new InvalidCommandException("Progress must be an integer from 0 to 100.");
-        }
-
-        if (percentage < 0 || percentage > 100) {
-            throw new InvalidCommandException("Progress must be between 0 and 100.");
-        }
-
-        return new SetProgressCommand(modName, percentage);
     }
 
     private Command parseExempt(String arguments) throws InvalidCommandException {
