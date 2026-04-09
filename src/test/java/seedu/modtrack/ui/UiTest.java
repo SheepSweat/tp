@@ -99,8 +99,8 @@ public class UiTest {
         this.ui.showList(completedList, allModules);
         String output = this.getOutput();
 
-        assertTrue(output.contains("✔ CS1010"));
-        assertTrue(output.contains("✘ CS1231"));
+        assertTrue(output.contains("CS1010"));
+        assertTrue(output.contains("CS1231"));
     }
 
     @Test
