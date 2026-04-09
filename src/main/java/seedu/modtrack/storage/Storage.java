@@ -1,4 +1,6 @@
-package seedu.modtrack.model;
+package seedu.modtrack.storage;
+
+import seedu.modtrack.model.Mod;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,38 +58,9 @@ public class Storage {
                 String[] parts = line.split("\\s*\\|\\s*");
 
                 if (parts.length == 5) {
-                    // backward compatibility with old save format
-                    String status = parts[0];
-                    String name = parts[1];
-                    int year = Integer.parseInt(parts[2]);
-                    int semester = Integer.parseInt(parts[3]);
-                    int credits = Integer.parseInt(parts[4]);
-
-                    Mod mod = new Mod(name, year, semester, credits);
-                    if (status.equals("1")) {
-                        mod.setToDone();
-                    }
-                    list.add(mod);
-                } else if (parts.length == 8) {
-                    String status = parts[0];
-                    String name = parts[1];
-                    int year = Integer.parseInt(parts[2]);
-                    int semester = Integer.parseInt(parts[3]);
-                    int credits = Integer.parseInt(parts[4]);
-                    int progress = Integer.parseInt(parts[5]);
-                    String completionType = parts[6];
-                    String prereqText = parts[7];
-
-                    Mod mod = new Mod(name, year, semester, credits);
-
-                    if (status.equals("1")) {
-                        mod.setToDone();
-                    }
-                    mod.setProgressPercentage(progress);
-                    mod.setCompletionType(completionType);
-                    mod.setPrerequisites(Mod.parsePrerequisites(prereqText));
-
-                    list.add(mod);
+                    list.add(parseLegacyFivePart(parts));
+                } else if (parts.length == 7) {
+                    list.add(parseCurrentSevenPart(parts));
                 }
             }
 
@@ -95,9 +68,49 @@ public class Storage {
         } catch (FileNotFoundException e) {
             System.out.println("Storage file not found.");
         } catch (NumberFormatException e) {
-            System.out.println("Storage file contains invalid data.");
+            System.out.println("Storage file contains invalid numeric data.");
+        } catch (Exception e) {
+            System.out.println("Error loading storage: " + e.getMessage());
+        }
+        return list;
+    }
+
+    private Mod parseLegacyFivePart(String[] parts) {
+        String status = parts[0];
+        String name = parts[1];
+        int year = Integer.parseInt(parts[2]);
+        int semester = Integer.parseInt(parts[3]);
+        int credits = Integer.parseInt(parts[4]);
+
+        Mod mod = new Mod(name, year, semester, credits);
+        if (status.equals("1")) {
+            mod.setToDone();
+        }
+        return mod;
+    }
+
+    private Mod parseCurrentSevenPart(String[] parts) {
+        String status = parts[0];
+        String name = parts[1];
+        int year = Integer.parseInt(parts[2]);
+        int semester = Integer.parseInt(parts[3]);
+        int credits = Integer.parseInt(parts[4]);
+        String completionType = parts[5];
+        String prereqText = parts[6];
+
+        Mod mod = new Mod(name, year, semester, credits);
+
+        // Set status based on the first column
+        if (status.equals("1")) {
+            mod.setToDone();
         }
 
-        return list;
+        // Set the specific type (NORMAL, EXEMPTED, TRANSFERRED)
+        mod.setCompletionType(completionType);
+
+        // Set prerequisites
+        mod.setPrerequisites(Mod.parsePrerequisites(prereqText));
+
+        return mod;
     }
 }

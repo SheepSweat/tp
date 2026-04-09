@@ -3,12 +3,14 @@ package seedu.modtrack;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import seedu.modtrack.model.Command;
 import seedu.modtrack.parser.InvalidCommandException;
 import seedu.modtrack.model.Mod;
 import seedu.modtrack.model.ReferenceList;
-import seedu.modtrack.model.Storage;
+import seedu.modtrack.storage.Storage;
 import seedu.modtrack.parser.Parser;
 import seedu.modtrack.ui.Ui;
 
@@ -59,6 +61,7 @@ public class ModTrack {
     }
 
     public static void main(String[] args) {
+        Logger.getLogger("seedu.modtrack").setLevel(Level.WARNING);
         ModTrack modTrack = new ModTrack();
         modTrack.run();
     }

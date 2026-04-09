@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ReferenceList {
 
-    public ArrayList<Mod> list;
+    public static ArrayList<Mod> list;
 
     public ReferenceList() {
         this.list = new ArrayList<>();
@@ -68,5 +68,9 @@ public class ReferenceList {
         list.add(newmod);
         newmod = new Mod("EG2401A", 3, 1, 2);
         list.add(newmod);
+    }
+
+    public static ArrayList<Mod>  getReferenceList() {
+        return list;
     }
 }

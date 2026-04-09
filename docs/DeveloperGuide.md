@@ -84,7 +84,6 @@ public abstract class Command {
     public boolean isExit() { return this.isExit; }
 }
 ```
-
 #### Design Considerations
 
 **Aspect: How commands interact with the module list**
@@ -135,21 +134,169 @@ The Parser ensures that invalid inputs are handled gracefully by throwing approp
 ## Implementation
 ### Haofu's enhancements
 #### 1. Add Feature
-* **`AddCommand`**: Stores details for a new module (`name`, `year`, `semester`, `credits`). Its `execute` method performs a duplicate check before adding a new `Mod` object to the list.
-  The following sequence diagram shows how an add operation goes through the `Logic` component:
-  ![img_1.png](img_1.png)
+The **`AddCommand`** facilitates the addition of new modules to the application by storing details such as `name`, `year`, `semester`, and `credits`.
+
+**Implementation**
+
+The addition mechanism is facilitated by `VersionedAddressBook`. When a user executes the `AddCommand`, the `execute` method first performs a duplicate check. If the module is unique, it is added to the list. The `AddCommand` then calls `Model#commitAddressBook()`, causing the modified state of the address book after the addition to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+
+> [!NOTE]
+> If the command fails its execution (e.g., a duplicate module is found), it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
+
+The following sequence diagram shows how an add operation goes through the `Logic` component:
+![img_6.png](img_6.png)
+
+---
 
 #### 2. Delete Feature
-* **`DeleteCommand`**: Stores a `modName` string. Its `execute` method iterates through the list to find and remove the matching module.
-  The following sequence diagram shows how a delete operation goes through the `Logic` component:
-  ![img_2.png](img_2.png)
+The **`DeleteCommand`** allows for the removal of a module from the list using a `modName` string.
 
-### Yang Han's enchancement
-#### 3. List Feature
+**Implementation**
+
+The deletion mechanism is also facilitated by `VersionedAddressBook`. Upon execution, the `DeleteCommand` iterates through the list to find the matching module. If a match is found and removed, the command calls `Model#commitAddressBook()`. This causes the modified state of the address book—now excluding the deleted module—to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+
+The following sequence diagram shows how a delete operation goes through the `Logic` component:
+![img_7.png](img_7.png)
+
+### Yang Han's enhancements
+#### List Feature
+
+User inputs `List` `List c/`
+
+The List feature is executed by the `ListCommand.java` (`List`) or the `ListCompareCommand. java` (`List c/`) class.
+It extends from the abstract class `Command` and overrides the `execute()` method.
+
+V1.0 Current implementation:
+The `execute()` method in the `ListCommand` class iterates through the list of modules tracked by the program and prints out
+all modules currently tracked using the `toString()` method of the mod class.
+
+V2.0 implementation:
+The `execute()` method in the `ListCompareCommand` class iterates through the list of modules tracked by the program
+and compares it to a predefined list of all modules required to be completed by a computer engineering student. prints
+output completed and uncompleted modules in 2 separate lists using the `toString()` method of the mod class.
+
+Design Considerations:
+* The list feature is implemented this way because we want to allow the user the ability to view their modules tracked
+  as is or against the modules required to graduate.
+* Under `ListCompareCommand` we compare the list of modules tracked to a predefined list, populated on start up
+  to allow easy updates when there is a change in graduation requirements or for scaling the program to other majors.
+* Two separate classes was chosen as we wanted to a streamlined command class where each command overrides the execute
+  method in their respective command classes.
+* Alternatives considered: Using a single command class and separating the executions by methods within the class.
+  This was rejected as it will cause list to have a different structure from the other command classes causing confusion.
+
+#### Sequence Diagram
+`List` command Sequence Diagram
+![img_2.png](list2.png)
+
+`List c/` command Sequence Diagram 
+![img_1.png](list1.png)
 
 ### Christina's enchancements
 #### 4. Mark Feature
+
+The **`MarkCommand`** allows the user to mark a tracked module as completed by specifying its module code.
+
+**Implementation**
+
+The marking mechanism is facilitated by the `MarkCommand` class. When a user executes the `mark` command, the `execute()` method iterates through the tracked module list to find a module whose name matches the provided `modName`.
+
+If a matching module is found:
+- its completion status is updated using `Mod#setToDone()`
+- a confirmation message is printed to the user
+
+If no matching module is found, the system informs the user that the module does not exist in the current tracked list.
+
+This feature is important because it allows users to update their academic progress after completing a module.
+
+**Example:**
+```text
+mark n/CS2113
+```
+
+##### Design Considerations
+
+**Aspect: How modules are identified for marking**
+
+* **Alternative 1 (Current implementation):** Identify the module by its module code (`modName`) using a linear search through the list.
+    * **Pros:** Simple and easy to understand for the current scope of the project.
+    * **Cons:** Less efficient for very large module lists.
+* **Alternative 2:** Use an index-based marking system (e.g. `mark 3`) or a `HashMap<String, Mod>` for faster lookup.
+    * **Pros:** Potentially faster lookup and simpler internal retrieval.
+    * **Cons:** Less intuitive for users, and would require additional synchronization between displayed indices and stored data.
+
+**Reasoning:**  
+The current implementation was chosen because module codes such as `CS2113` are already unique and meaningful to the user, making command usage more natural in a CLI-based academic tracker.
+
+##### Sequence Diagram
+
+![img_2.png](img_2.png)
+
+The sequence diagram above shows how the `mark` command is handled:
+1. The user enters the `mark` command
+2. The `Parser` creates a `MarkCommand`
+3. `MarkCommand` iterates through the tracked module list
+4. If a matching module is found, its completion status is updated
+5. The updated list is saved through the `Storage` component
+
+---
+
 #### 5. Unmark Feature
+
+The **`UnmarkCommand`** allows the user to reverse a previously completed module and set it back to incomplete.
+
+**Implementation**
+
+The unmarking mechanism is facilitated by the `UnmarkCommand` class. It follows a similar implementation pattern to `MarkCommand`.
+
+When a user executes the `unmark` command:
+- the system searches the module list for a module matching the provided `modName`
+- if found, the module’s completion status is reset using `Mod#setToUndone()`
+- the user is informed that the module has been marked as incomplete again
+
+This feature is useful when users make accidental updates or wish to revise their academic planning.
+
+**Example:**
+```text
+unmark n/CS2113
+```
+
+##### Design Considerations
+
+**Aspect: Whether to merge mark and unmark into one command**
+
+* **Alternative 1 (Current implementation):** Implement `mark` and `unmark` as two separate command classes.
+    * **Pros:** Clear separation of responsibilities and more intuitive command structure.
+    * **Cons:** Slight code duplication due to similar search logic.
+* **Alternative 2:** Use a single generic status command such as `status n/CS2113 s/incomplete`.
+    * **Pros:** More extensible for future status types.
+    * **Cons:** Adds unnecessary parsing complexity and makes the command less user-friendly.
+
+**Reasoning:**  
+The current implementation was chosen to keep user interactions simple and explicit. Since the application is intended for fast CLI usage, direct commands such as `mark` and `unmark` are easier for users to remember and use.
+
+##### Sequence Diagram
+
+![img_8.png](img_8.png)
+
+The sequence diagram above shows how the `unmark` command is handled:
+1. The user enters the `unmark` command
+2. The `Parser` creates an `UnmarkCommand`
+3. `UnmarkCommand` iterates through the tracked module list
+4. If a matching module is found, its completion status is reset
+5. The updated list is saved through the `Storage` component
+
+##### UML Class Diagram
+
+![img_9.png](img_9.png)
+
+The class diagram above illustrates the command-based architecture used in ModTrack. `ModTrack` acts as the central controller of the application and coordinates interactions between the `Parser`, `Storage`, and the module list. The `Parser` is responsible for converting raw user input into a concrete subclass of the abstract `Command` class.
+
+The `Command` abstraction allows different user actions to be encapsulated into separate classes such as `MarkCommand`, `UnmarkCommand`, `ExitCommand`, and `ShowGradReqCommand`. This design promotes modularity by ensuring that each command handles only one responsibility.
+
+Besides `mark` and `unmark`, the application also supports other core command interactions such as `exit` and `show grad req`. These commands follow the same command-based design architecture, where the `Parser` maps user input into a specific subclass of `Command`, and the `ModTrack` main loop executes the corresponding action.
+
+This design allows the application to remain modular and scalable, as future commands can be introduced with minimal changes to the overall control flow.
 
 ### Ang Lee's enhancements
 #### 6. Exit Feature
@@ -166,28 +313,7 @@ exit
 ```
 ##### Sequence Diagram
 
-```plantuml
-@startuml
-actor User
-participant UI
-participant Parser
-participant ExitCommand
-participant Storage
-
-User -> UI : enter "exit"
-UI -> Parser : parse(input)
-Parser -> ExitCommand : create command
-ExitCommand -> ExitCommand : execute()
-
-alt Unsaved changes exist
-    ExitCommand -> Storage : save(data)
-    Storage --> ExitCommand : success
-end
-
-ExitCommand --> UI : termination signal
-UI --> User : display goodbye message
-@enduml
-```
+![img_4.png](img_4.png)
 The sequence diagram above shows how the exit command is handled:
 1. The user enters the `exit` command
 2. The input is parsed into an `ExitCommand`
@@ -209,23 +335,7 @@ show grad req
 ```
 #### Sequence Diagram
 
-```plantuml
-@startuml
-actor User
-participant UI
-participant Parser
-participant GradCommand
-participant ModList
-
-User -> UI : enter "grad"
-UI -> Parser : parse(input)
-Parser -> GradCommand : create command
-GradCommand -> ModList : retrieve modules
-GradCommand -> GradCommand : compute requirements
-GradCommand --> UI : formatted result
-UI --> User : display remaining requirements
-@enduml
-```
+![img_5.png](img_5.png)
 The sequence diagram illustrates how graduation requirements are displayed:
 1. The user enters the `grad` command
 2. The Parser creates a `GradCommand`
@@ -257,7 +367,16 @@ This application provides:
 |Version| As a ... | I want to ... | So that I can ...|
 |--------|----------|---------------|------------------|
 |v1.0|new user|see usage instructions|refer to them when I forget how to use the application|
-|v2.0|user|find a to-do item by name|locate a to-do without having to go through the entire list|
+|v1.0|user|add a module with its module code and title|record modules I have taken|
+|v1.0|user|delete a module entry|remove modules I added by mistake|
+|v1.0|user|mark a module as completed|track my academic progress|
+|v1.0|user|view all completed modules|know what I have fulfilled|
+|v1.0|user|view all uncompleted required modules|plan future semesters|
+|v1.0|user|view the total modular credits earned|track my graduation progress|
+|v1.0|user|view the remaining modular credits required|plan my remaining semesters|
+|v1.0|user|compare my completed modules with graduation requirements|see unmet requirement|
+|v1.0|user|assign a module to a specific semester|track when I took it|
+
 
 ## Non-Functional Requirements
 
