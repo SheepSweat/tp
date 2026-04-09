@@ -20,15 +20,15 @@ class ListCompareCommandTest {
     @BeforeEach
     void setUp() {
         // Redirect System.out to our "bucket" to capture the printed output
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(this.outContent));
         ReferenceList ref = new ReferenceList();
-        ref.populateReferenceList(ref.list);
+        ref.populateReferenceList(ReferenceList.getReferenceList());
     }
 
     @AfterEach
     void tearDown() {
         // Restore the original System.out
-        System.setOut(originalOut);
+        System.setOut(this.originalOut);
     }
 
     @Test
@@ -41,7 +41,7 @@ class ListCompareCommandTest {
         command.execute(emptyTaskList);
 
         // Assert
-        String output = outContent.toString();
+        String output = this.outContent.toString();
         assertTrue(output.contains("COMPLETED MODULES:"));
         assertTrue(output.contains("(None yet)"));
         assertTrue(output.contains("MISSING/UNCOMPLETED MODULES:"));
@@ -64,7 +64,7 @@ class ListCompareCommandTest {
 
         // 2. Act
         command.execute(taskList);
-        String output = outContent.toString();
+        String output = this.outContent.toString();
 
         // 3. Assert - Use indexes to ensure modules are in the right sections
         int completedHeader = output.indexOf("✔ COMPLETED MODULES:");
