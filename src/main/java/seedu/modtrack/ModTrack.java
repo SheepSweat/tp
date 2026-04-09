@@ -42,7 +42,7 @@ public class ModTrack {
 
             try {
                 Command command = this.parser.parse(instruction);
-                command.execute(this.taskList);
+                command.execute(this.taskList, this.ui);
 
                 this.storage.save(this.taskList);
 
@@ -50,9 +50,9 @@ public class ModTrack {
                     isRunning = false;
                 }
             } catch (InvalidCommandException e) {
-                System.out.println(e.getMessage());
+                this.ui.showInvalidCommandError();
             } catch (IOException e) {
-                System.out.println("Error saving data: " + e.getMessage());
+                this.ui.showSaveError();
             }
         }
 

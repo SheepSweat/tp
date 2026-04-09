@@ -2,10 +2,13 @@ package seedu.modtrack.command;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import seedu.modtrack.commands.AddCommand;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,11 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddCommandTest {
     private ArrayList<Mod> list;
+    private Ui ui;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
     public void setUp() {
         this.list = new ArrayList<>();
+        this.ui = new Ui();
         // Redirect System.out to capture console output for verification of
         // printAddMessage
         System.setOut(new PrintStream(this.outContent));
@@ -26,7 +31,7 @@ public class AddCommandTest {
     @Test
     public void execute_newModule_addsToListAndPrintsSuccess() {
         AddCommand command = new AddCommand("CS2113", 2, 1, 4);
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         // Verify Model update
         assertEquals(1, this.list.size());
@@ -46,7 +51,7 @@ public class AddCommandTest {
         this.list.add(existing);
 
         AddCommand command = new AddCommand("CS2113", 2, 1, 4);
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         // Size should remain 1
         assertEquals(1, this.list.size());
@@ -65,7 +70,7 @@ public class AddCommandTest {
         this.list.add(existing);
 
         AddCommand command = new AddCommand("cs2113", 2, 1, 4); // Test case-insensitivity
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         assertEquals(1, this.list.size());
 
@@ -78,7 +83,7 @@ public class AddCommandTest {
         this.list.add(new Mod("CS1010", 1, 1, 4));
 
         AddCommand command = new AddCommand("CS2113", 2, 1, 4);
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         String output = this.outContent.toString();
         assertTrue(output.contains("Total modules tracked: 2"));
@@ -88,8 +93,8 @@ public class AddCommandTest {
     public void execute_customCredits_addsWithCorrectCredits() {
         // Testing a 2MC module like a DYOM or specific lab
         AddCommand command = new AddCommand("CS2113", 2, 1, 2);
-        command.execute(list);
+        command.execute(this.list, this.ui);
 
-        assertEquals(2, list.get(0).getModCredits(), "Module should be saved with 2 MCs");
+        assertEquals(2, this.list.get(0).getModCredits(), "Module should be saved with 2 MCs");
     }
 }

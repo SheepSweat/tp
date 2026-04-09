@@ -3,6 +3,7 @@ package seedu.modtrack.commands;
 import java.util.ArrayList;
 
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 
 public class ExemptCommand extends Command {
     private final String modName;
@@ -12,15 +13,14 @@ public class ExemptCommand extends Command {
     }
 
     @Override
-    public void execute(ArrayList<Mod> list) {
+    public void execute(ArrayList<Mod> list, Ui ui) {
         for (Mod mod : list) {
             if (mod.getModName().equalsIgnoreCase(this.modName)) {
                 mod.setToExempted();
-                System.out.println("Module marked as exempted:");
-                System.out.println(mod.getModName());
+                ui.showExemptedModule(mod);
                 return;
             }
         }
-        System.out.println("Module not found.");
+        ui.showNoModulesFound();
     }
 }

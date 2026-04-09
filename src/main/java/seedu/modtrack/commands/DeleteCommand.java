@@ -1,6 +1,7 @@
 package seedu.modtrack.commands;
 
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(ArrayList<Mod> list) {
+    public void execute(ArrayList<Mod> list, Ui ui) {
         logger.log(Level.INFO, "Attempting to delete module: {0}", this.modName);
 
         // Internal sanity check: The list should not be null
@@ -27,27 +28,21 @@ public class DeleteCommand extends Command {
         int initialSize = list.size();
 
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getModName().equalsIgnoreCase(this.modName)) {
+            Mod mod = list.get(i);
+            if (mod.getModName().equalsIgnoreCase(this.modName)) {
                 logger.log(Level.INFO, "Module found at index {0}. Proceeding with removal.", i);
-
-                System.out.println("----------------------------------------------------");
-                System.out.println("Noted. I've removed this mod:\n");
-                System.out.println(list.get(i).toString());
-
                 list.remove(i);
 
                 // Assertion: The list must have exactly one fewer item now
                 assert list.size() == initialSize - 1 : "List size should decrease by exactly 1";
-
-                System.out.printf("Now you have %d mods in the list.\n", list.size());
-                System.out.println("----------------------------------------------------");
+                ui.showDeletedModule(mod, list.size());
                 return;
             }
         }
 
         // If we reach here, the module wasn't found
         logger.log(Level.WARNING, "Module {0} was not found in the list.", this.modName);
-        System.out.println("Module not found.");
+        ui.showNoModulesFound();
 
         // Assertion: Ensure the list size remained unchanged if deletion failed
         assert list.size() == initialSize : "List size changed even though no module was found";

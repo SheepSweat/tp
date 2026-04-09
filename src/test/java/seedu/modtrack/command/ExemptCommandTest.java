@@ -2,10 +2,13 @@ package seedu.modtrack.command;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import seedu.modtrack.commands.ExemptCommand;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,11 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ExemptCommandTest {
     private ArrayList<Mod> list;
+    private Ui ui;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
     public void setUp() {
         this.list = new ArrayList<>();
+        this.ui = new Ui();
+
         // Redirect System.out to capture console output
         System.setOut(new PrintStream(this.outContent));
 
@@ -29,7 +35,7 @@ public class ExemptCommandTest {
     @Test
     public void execute_existingModule_setsToExemptedCorrectly() {
         ExemptCommand command = new ExemptCommand("MA1511");
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         Mod mod = this.list.get(0);
 
@@ -50,7 +56,7 @@ public class ExemptCommandTest {
     public void execute_caseInsensitiveName_worksCorrectly() {
         // Test with lowercase input
         ExemptCommand command = new ExemptCommand("ma1511");
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         assertTrue(this.list.get(0).getIsComplete());
         assertEquals("EXEMPTED", this.list.get(0).getCompletionType());
@@ -59,13 +65,13 @@ public class ExemptCommandTest {
     @Test
     public void execute_moduleNotFound_printsErrorMessage() {
         ExemptCommand command = new ExemptCommand("CS1010");
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         // Verify state remains unchanged
         assertFalse(this.list.get(0).getIsComplete(), "Module should still be incomplete.");
 
         // Verify error message
         String output = this.outContent.toString();
-        assertTrue(output.contains("Module not found."), "Should print error message when mod is missing.");
+        assertTrue(output.contains("No modules found in the list."), "Should print error message when mod is missing.");
     }
 }

@@ -3,6 +3,7 @@ package seedu.modtrack.commands;
 import java.util.ArrayList;
 
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 
 public class AddPrereqCommand extends Command {
     private final String modName;
@@ -14,21 +15,21 @@ public class AddPrereqCommand extends Command {
     }
 
     @Override
-    public void execute(ArrayList<Mod> list) {
+    public void execute(ArrayList<Mod> list, Ui ui) {
         for (Mod mod : list) {
             if (mod.getModName().equalsIgnoreCase(this.modName)) {
                 for (String prereq : this.prerequisites) {
                     mod.addPrerequisite(prereq);
                 }
-                System.out.println("Prerequisites updated for " + mod.getModName() + ":");
+                ui.showUpdatedPrerequisites(mod);
                 if (mod.getPrerequisites().isEmpty()) {
-                    System.out.println("None");
+                    ui.showNoModulesFound();
                 } else {
-                    System.out.println(String.join(", ", mod.getPrerequisites()));
+                    ui.listPrerequisite(mod);
                 }
                 return;
             }
         }
-        System.out.println("Module not found.");
+        ui.showNoModulesFound();
     }
 }

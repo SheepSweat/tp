@@ -12,21 +12,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import seedu.modtrack.commands.ListCommand;
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 
 class ListCommandTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
+    private Ui ui;
 
     // This runs before EVERY test - sets up the "bucket" automatically
     @BeforeEach
     void setUp() {
-        System.setOut(new PrintStream(outContent));
+        System.setOut(new PrintStream(this.outContent));
+        this.ui = new Ui();
     }
 
     // This runs after EVERY test - puts the console back to normal
     @AfterEach
     void tearDown() {
-        System.setOut(originalOut);
+        System.setOut(this.originalOut);
     }
 
     @Test
@@ -39,10 +42,10 @@ class ListCommandTest {
         ListCommand command = new ListCommand();
 
         // 2. Act
-        command.execute(modInterests);
+        command.execute(modInterests, this.ui);
 
         // 3. Assert - We get the output and normalize line endings
-        String output = outContent.toString().replace("\r\n", "\n").trim();
+        String output = this.outContent.toString().replace("\r\n", "\n").trim();
 
         // Check for the Header
         assertTrue(output.contains("===== Your Tracked Modules ====="), "Header missing!");
@@ -58,9 +61,9 @@ class ListCommandTest {
     @Test
     void execute_emptyList_printsCleanMessage() {
         ListCommand command = new ListCommand();
-        command.execute(new ArrayList<>());
+        command.execute(new ArrayList<>(), this.ui);
 
-        String output = outContent.toString().trim();
+        String output = this.outContent.toString().trim();
 
         // Using assertEquals is more robust than assertTrue(contains) for short messages
         String expected = "===== Your Tracked Modules =====" + System.lineSeparator() + "No modules tracked yet.";

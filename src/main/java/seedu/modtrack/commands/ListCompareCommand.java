@@ -2,12 +2,13 @@ package seedu.modtrack.commands;
 
 import seedu.modtrack.referencelist.ReferenceList;
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import java.util.ArrayList;
 
 public class ListCompareCommand extends Command {
 
     @Override
-    public void execute(ArrayList<Mod> taskList) {
+    public void execute(ArrayList<Mod> taskList, Ui ui) {
         assert taskList != null : "taskList passed to ListCompareCommand should not be null";
         ArrayList<Mod> requiredModules = ReferenceList.getReferenceList();
 
@@ -26,6 +27,7 @@ public class ListCompareCommand extends Command {
 
             if (isFoundAndComplete) {
                 completed.add(reqMod);
+                reqMod.setToDone();
             } else {
                 missing.add(reqMod);
             }
@@ -34,31 +36,6 @@ public class ListCompareCommand extends Command {
         assert (completed.size() + missing.size()) == requiredModules.size()
                 : "Total categorized modules must equal total required modules";
 
-        this.printComparison(completed, missing);
-    }
-
-    private void printComparison(ArrayList<Mod> completed, ArrayList<Mod> missing) {
-        System.out.println("____________________________________________________________");
-        System.out.println("Comparison with Graduation Requirements (CE):");
-
-        System.out.println("\n✔ COMPLETED MODULES:");
-        if (completed.isEmpty()) {
-            System.out.println("  (None yet)");
-        } else {
-            for (Mod mod : completed) {
-                mod.setToDone();
-                System.out.println(mod);
-            }
-        }
-
-        System.out.println("\n✘ MISSING/UNCOMPLETED MODULES:");
-        if (missing.isEmpty()) {
-            System.out.println("  Congratulations! All requirements met.");
-        } else {
-            for (Mod mod : missing) {
-                System.out.println(mod);
-            }
-        }
-        System.out.println("____________________________________________________________");
+        ui.showComparedList(completed, missing);
     }
 }

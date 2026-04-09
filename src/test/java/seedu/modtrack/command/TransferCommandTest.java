@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import seedu.modtrack.commands.TransferCommand;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,11 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class TransferCommandTest {
     private ArrayList<Mod> list;
+    private Ui ui;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
     public void setUp() {
         this.list = new ArrayList<>();
+        this.ui = new Ui();
         // Capture console output
         System.setOut(new PrintStream(this.outContent));
 
@@ -29,7 +32,7 @@ public class TransferCommandTest {
     @Test
     public void execute_validModule_setsToTransferred() {
         TransferCommand command = new TransferCommand("CS2040C");
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         Mod mod = this.list.get(0);
 
@@ -50,7 +53,7 @@ public class TransferCommandTest {
     public void execute_caseInsensitive_findsModule() {
         // Testing with lowercase "cs2040c"
         TransferCommand command = new TransferCommand("cs2040c");
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         assertTrue(this.list.get(0).getIsComplete());
         assertEquals("TRANSFERRED", this.list.get(0).getCompletionType());
@@ -59,13 +62,13 @@ public class TransferCommandTest {
     @Test
     public void execute_moduleNotFound_printsErrorMessage() {
         TransferCommand command = new TransferCommand("EE2026");
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         // Verify state did not change
         assertFalse(this.list.get(0).getIsComplete());
 
         // Verify feedback
         String output = this.outContent.toString();
-        assertTrue(output.contains("Module not found."));
+        assertTrue(output.contains("No modules found in the list."));
     }
 }

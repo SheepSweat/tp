@@ -8,18 +8,21 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import seedu.modtrack.commands.ShowGradReqCommand;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ShowGradReqCommandTest {
     private ArrayList<Mod> list;
+    private Ui ui;
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     private PrintStream originalOut;
 
     @BeforeEach
     public void setUp() {
         this.list = new ArrayList<>();
+        this.ui = new Ui();
         this.originalOut = System.out;
         System.setOut(new PrintStream(this.outputStream));
     }
@@ -28,7 +31,7 @@ public class ShowGradReqCommandTest {
     public void execute_printsGraduationRequirements() {
         ShowGradReqCommand command = new ShowGradReqCommand();
 
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         String output = this.outputStream.toString();
 

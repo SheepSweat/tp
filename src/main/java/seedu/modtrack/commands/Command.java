@@ -2,6 +2,7 @@ package seedu.modtrack.commands;
 
 import java.util.ArrayList;
 
+import seedu.modtrack.ui.Ui;
 import seedu.modtrack.module.Mod;
 
 public abstract class Command {
@@ -10,7 +11,7 @@ public abstract class Command {
     public Command() {
     }
 
-    public abstract void execute(ArrayList<Mod> list);
+    public abstract void execute(ArrayList<Mod> list, Ui ui);
 
     public boolean isExit() {
         return this.isExit;

@@ -19,6 +19,75 @@ public class Ui {
         System.out.println(closingText);
     }
 
+    public void showDivider() {
+        System.out.println("----------------------------------------------------");
+    }
+
+    public void showNoModulesFound() {
+        System.out.println("No modules found in the list.");
+    }
+
+    public void showExistingIncompleteModuleError(Mod existingMod) {
+        System.out.println("This module already exists in the list, but is currently incomplete.");
+        System.out.println("To mark this module as complete, use: mark n/" + existingMod.getModName());
+    }
+
+    public void showDuplicateModuleError() {
+        System.out.println("This module is already in the list!");
+    }
+
+    public void showAddModule(ArrayList<Mod> list, Mod mod) {
+        this.showDivider();
+        System.out.println("Module added:\n");
+        System.out.println(mod.toString());
+        System.out.println("Total modules tracked: " + list.size());
+        this.showDivider();
+    }
+
+    public void showUpdatedPrerequisites(Mod mod) {
+        System.out.println("Prerequisites updated for " + mod.getModName() + ":");
+    }
+
+    public void listPrerequisite(Mod mod) {
+        System.out.println(String.join(", ", mod.getPrerequisites()));
+    }
+
+    public void showPrerequisites(Mod mod) {
+        System.out.println("Prerequisites for " + mod.getModName() + ":");
+        if (mod.getPrerequisites().isEmpty()) {
+            System.out.println("None");
+        } else {
+            this.listPrerequisite(mod);
+        }
+    }
+
+    public void showClearConfirmation() {
+        System.out.println("Noted. All modules have been cleared. Now you have an empty list.");
+    }
+
+    public void showDeletedModule(Mod mod, int remainingModules) {
+        this.showDivider();
+        System.out.println("Noted. I've removed this mod:\n");
+        System.out.println(mod.toString());
+        System.out.println("Now you have " + remainingModules + " mods in the list.");
+        this.showDivider();
+    }
+
+    public void showExemptedModule(Mod mod) {
+        System.out.println("Module marked as exempted:");
+        System.out.println(mod.getModName());
+    }
+
+    public void showMatchingModule(Mod mod) {
+        System.out.println("--------------------");
+        System.out.println(mod);
+    }
+
+    public void showTransferredModule(Mod mod) {
+        System.out.println("Module marked as transferred:");
+        System.out.println(mod.getModName());
+    }
+
     public void showEmptyDescriptionError(String command) {
         System.out.println(" " + command + " Number cannot be empty, ensure a Module code is written after '" + command
                 + "'. Thankssssss!");
@@ -33,45 +102,53 @@ public class Ui {
         System.out.println("Module does not exist. Choose another number.");
     }
 
-    public void showMarkedCourse(String taskInfo, String modularCredits) {
+    public void showSaveError() {
+        System.out.println("Error saving data. Please try again.");
+    }
+
+    public void showMarkedCourse(Mod mod) {
         System.out.println("Module marked as completed:");
-        System.out.println("Name: " + taskInfo);
-        System.out.println("Modular Credits Earned :" + modularCredits);
+        System.out.println(mod.getModName());
     }
 
-    public void showUnmarkedCourse(String taskInfo) {
+    public void showUnmarkedCourse(Mod mod) {
         System.out.println("Module marked as incomplete:");
-        System.out.println("Name: " + taskInfo);
+        System.out.println(mod.getModName());
     }
 
-    public void showList(ArrayList<Mod> taskList, ArrayList<Mod> fullModuleList) {
-        System.out.println("===== Module Tracker =====");
-        System.out.println("Completed Modules:");
-        // for completed modules
-        for (Mod task : taskList) {
-            if (task.getIsComplete()) {
-                System.out.println("✔ " + task.getModName() + "(" + task.getSemester() + ")"
-                        + " - " + task.getModCredits() + "MCs");
+    public void showList(ArrayList<Mod> list) {
+        System.out.println("===== Your Tracked Modules =====");
+        if (list.isEmpty()) {
+            System.out.println("No modules tracked yet.");
+        } else {
+            for (Mod mod : list) {
+                System.out.println(mod);
             }
         }
-        System.out.println("\nRemaining Reference Modules:");
-        for (Mod module : fullModuleList) {
-            boolean alreadyAdded = false;
+    }
 
-            // Check if this reference module is already in the user's taskList
-            for (Mod task : taskList) {
-                if (module.getModName().equals(task.getModName())) {
-                    alreadyAdded = true;
-                    break;
-                }
-            }
+    public void showComparedList(ArrayList<Mod> completedModules, ArrayList<Mod> missingModules) {
+        System.out.println("____________________________________________________________");
+        System.out.println("Comparison with Graduation Requirements (CE):");
 
-            // Only print "✘" if it was NOT found in the taskList
-            if (!alreadyAdded) {
-                System.out.println("✘ " + module.getModName()
-                        + " (" + module.getSemester() + ") - " + module.getModCredits() + "MCs");
+        System.out.println("\n✔ COMPLETED MODULES:");
+        if (completedModules.isEmpty()) {
+            System.out.println("  (None yet)");
+        } else {
+            for (Mod mod : completedModules) {
+                System.out.println(mod);
             }
         }
+
+        System.out.println("\n✘ MISSING/UNCOMPLETED MODULES:");
+        if (missingModules.isEmpty()) {
+            System.out.println("  Congratulations! All requirements met.");
+        } else {
+            for (Mod mod : missingModules) {
+                System.out.println(mod);
+            }
+        }
+        System.out.println("____________________________________________________________");
     }
 
     public void showGradReq() {
@@ -114,6 +191,5 @@ public class Ui {
         System.out.println("General Education Curriculum:");
         System.out.println("- GENXXXX");
         System.out.println("- GECXXXX");
-
     }
 }

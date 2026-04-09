@@ -3,6 +3,7 @@ package seedu.modtrack.command;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -11,16 +12,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import seedu.modtrack.commands.ListCompareCommand;
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import seedu.modtrack.referencelist.ReferenceList;
 
 class ListCompareCommandTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
+    private Ui ui;
 
     @BeforeEach
     void setUp() {
         // Redirect System.out to our "bucket" to capture the printed output
         System.setOut(new PrintStream(this.outContent));
+        this.ui = new Ui();
         ReferenceList ref = new ReferenceList();
         ref.populateReferenceList(ReferenceList.getReferenceList());
     }
@@ -38,7 +42,7 @@ class ListCompareCommandTest {
         ArrayList<Mod> emptyTaskList = new ArrayList<>();
 
         // Act
-        command.execute(emptyTaskList);
+        command.execute(emptyTaskList, this.ui);
 
         // Assert
         String output = this.outContent.toString();
@@ -63,7 +67,7 @@ class ListCompareCommandTest {
         taskList.add(unfinishedMod);
 
         // 2. Act
-        command.execute(taskList);
+        command.execute(taskList, this.ui);
         String output = this.outContent.toString();
 
         // 3. Assert - Use indexes to ensure modules are in the right sections

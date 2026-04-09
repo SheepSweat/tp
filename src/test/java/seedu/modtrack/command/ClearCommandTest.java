@@ -2,10 +2,13 @@ package seedu.modtrack.command;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 import seedu.modtrack.commands.ClearCommand;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,11 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClearCommandTest {
     private ArrayList<Mod> list;
+    private Ui ui;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
     public void setUp() {
         this.list = new ArrayList<>();
+        this.ui = new Ui();
         // Redirect System.out to capture the confirmation message
         System.setOut(new PrintStream(this.outContent));
 
@@ -29,7 +34,7 @@ public class ClearCommandTest {
     @Test
     public void execute_populatedList_clearsAllModules() {
         ClearCommand command = new ClearCommand();
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         // Verify list state
         assertTrue(this.list.isEmpty(), "List should be empty after clear command");
@@ -45,7 +50,7 @@ public class ClearCommandTest {
         ArrayList<Mod> emptyList = new ArrayList<>();
         ClearCommand command = new ClearCommand();
 
-        command.execute(emptyList);
+        command.execute(emptyList, this.ui);
 
         assertTrue(emptyList.isEmpty(), "Empty list should remain empty");
         assertEquals(0, emptyList.size());
@@ -58,7 +63,7 @@ public class ClearCommandTest {
         ArrayList<Mod> originalReference = this.list;
         ClearCommand command = new ClearCommand();
 
-        command.execute(this.list);
+        command.execute(this.list, this.ui);
 
         assertTrue(originalReference == this.list, "The list reference should remain the same");
         assertTrue(originalReference.isEmpty());

@@ -3,6 +3,7 @@ package seedu.modtrack.commands;
 import java.util.ArrayList;
 
 import seedu.modtrack.module.Mod;
+import seedu.modtrack.ui.Ui;
 
 public class MarkCommand extends Command {
     private String modName;
@@ -12,15 +13,14 @@ public class MarkCommand extends Command {
     }
 
     @Override
-    public void execute(ArrayList<Mod> list) {
+    public void execute(ArrayList<Mod> list, Ui ui) {
         for (Mod mod : list) {
             if (mod.getModName().equalsIgnoreCase(this.modName)) {
                 mod.setToDone();
-                System.out.println("Module marked as completed:");
-                System.out.println(mod.getModName());
+                ui.showMarkedCourse(mod);
                 return;
             }
         }
-        System.out.println("Module not found.");
+        ui.showNoModulesFound();
     }
 }
