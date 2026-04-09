@@ -46,6 +46,7 @@ public class ListCompareCommand extends Command {
             System.out.println("  (None yet)");
         } else {
             for (Mod mod : completed) {
+                mod.setToDone();
                 System.out.println(mod);
             }
         }

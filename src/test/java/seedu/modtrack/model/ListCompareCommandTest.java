@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import seedu.modtrack.commands.*;
+import seedu.modtrack.commands.ListCompareCommand;
 import seedu.modtrack.module.Mod;
 import seedu.modtrack.referencelist.ReferenceList;
 
@@ -49,35 +49,44 @@ class ListCompareCommandTest {
 
     @Test
     void execute_partialCompletion_showsCorrectCategories() {
-        // Setup
+        // 1. Setup - Create one completed and one incomplete mod
         ListCompareCommand command = new ListCompareCommand();
         ArrayList<Mod> taskList = new ArrayList<>();
 
-        // Add a module that exists in your ReferenceList
-        taskList.add(new Mod("CS1010", 1, 1, 4));
-        taskList.add(new Mod("CS2113", 2, 2, 4));
+        Mod finishedMod = new Mod("CS1010", 1, 1, 4);
+        finishedMod.setToDone(); // This should go to "Completed"
 
-        // Act
+        Mod unfinishedMod = new Mod("CS2113", 2, 2, 4);
+        // Default is incomplete - This should go to "Missing"
+
+        taskList.add(finishedMod);
+        taskList.add(unfinishedMod);
+
+        // 2. Act
         command.execute(taskList);
-
-        // Assert
         String output = outContent.toString();
 
-        assertTrue(output.contains("✔ COMPLETED MODULES:"));
-        // Check if CS1010 appears under the "Completed" header
-        assertTrue(output.contains("Name: CS1010"), "Module name formatted incorrectly");
-        assertTrue(output.contains("Year: YEAR1"), "Year formatting incorrect");
-        assertTrue(output.contains("Semester: SEM1"), "Semester formatting incorrect");
-        assertTrue(output.contains("Modular Credits: 4"), "Credits missing or wrong");
-        assertTrue(output.contains("Status: Incomplete"), "Default status should be Incomplete");
-        // Check if CS2113 appears under the "Completed" header
-        assertTrue(output.contains("Name: CS2113"), "Module name formatted incorrectly");
-        assertTrue(output.contains("Year: YEAR2"), "Year formatting incorrect");
-        assertTrue(output.contains("Semester: SEM2"), "Semester formatting incorrect");
-        assertTrue(output.contains("Modular Credits: 4"), "Credits missing or wrong");
-        assertTrue(output.contains("Status: Incomplete"), "Default status should be Incomplete");
+        // 3. Assert - Use indexes to ensure modules are in the right sections
+        int completedHeader = output.indexOf("✔ COMPLETED MODULES:");
+        int missingHeader = output.indexOf("✘ MISSING/UNCOMPLETED MODULES:");
 
-        // Ensure the "Missing" header is still present
-        assertTrue(output.contains("✘ MISSING/UNCOMPLETED MODULES:"));
+        int cs1010Index = output.indexOf("CS1010");
+        int cs2113Index = output.indexOf("CS2113");
+
+        // Verify Headers exist
+        assertTrue(completedHeader != -1, "Completed header missing");
+        assertTrue(missingHeader != -1, "Missing header missing");
+
+        // Verify CS1010 is AFTER the Completed header but BEFORE the Missing header
+        assertTrue(cs1010Index > completedHeader && cs1010Index < missingHeader,
+                "CS1010 should be in the Completed section");
+
+        // Verify CS2113 is AFTER the Missing header
+        assertTrue(cs2113Index > missingHeader,
+                "CS2113 should be in the Missing section");
+
+        // Verify detail accuracy
+        assertTrue(output.contains("Status: Complete"), "Complete status label missing");
+        assertTrue(output.contains("Status: Incomplete"), "Incomplete status label missing");
     }
 }
