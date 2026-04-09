@@ -50,20 +50,27 @@ public class StorageTest {
     }
 
     @Test
-    public void load_oldFormat_maintainsBackwardCompatibility() throws IOException {
-        // Manually create an old 5-part format file
-        // Format: status | name | year | semester | credits
+    public void load_currentSevenPartFormat_loadsCorrectly() throws IOException {
         File file = new File(TEST_FILE_PATH);
-        FileWriter fw = new FileWriter(file);
-        fw.write("1 | CS1010 | 1 | 1 | 4" + System.lineSeparator());
-        fw.close();
+        try (FileWriter fw = new FileWriter(file)) {
+            fw.write("1 | CS2113 | 2 | 1 | 4 | NORMAL | CS1010,MA1511" + System.lineSeparator());
+        }
 
         ArrayList<Mod> loadedList = this.storage.load();
 
+        // Verify the list size
         assertEquals(1, loadedList.size());
-        assertEquals("CS1010", loadedList.get(0).getModName());
-        assertTrue(loadedList.get(0).getIsComplete());
-        assertEquals(4, loadedList.get(0).getModCredits());
+
+        // Verify specific attributes
+        Mod loadedMod = loadedList.get(0);
+        assertEquals("CS2113", loadedMod.getModName());
+        assertTrue(loadedMod.getIsComplete());
+        assertEquals(4, loadedMod.getModCredits());
+        assertEquals("NORMAL", loadedMod.getCompletionType());
+
+        // Verify prerequisites were parsed
+        assertTrue(loadedMod.getPrerequisites().contains("CS1010"));
+        assertTrue(loadedMod.getPrerequisites().contains("MA1511"));
     }
 
     @Test

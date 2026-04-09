@@ -93,4 +93,3 @@ public class AddCommandTest {
         assertEquals(2, list.get(0).getModCredits(), "Module should be saved with 2 MCs");
     }
 }
-
