@@ -66,10 +66,10 @@ public class Storage {
 
                 String[] parts = line.split("\\s*\\|\\s*");
 
-                if (parts.length == 6) {
-                    list.add(this.parseLegacySixPart(parts));
-                } else if (parts.length == 8) {
-                    list.add(this.parseCurrentEightPart(parts));
+                if (parts.length == 5) {
+                    list.add(this.parseLegacyFivePart(parts));
+                } else if (parts.length == 7 || parts.length == 8) {
+                    list.add(this.parseCurrentSevenPart(parts));
                 }
             }
 
@@ -84,7 +84,7 @@ public class Storage {
         return list;
     }
 
-    private Mod parseLegacySixPart(String[] parts) {
+    private Mod parseLegacyFivePart(String[] parts) {
         String status = parts[0];
         String name = parts[1];
 
@@ -93,12 +93,10 @@ public class Storage {
         int year = Integer.parseInt(parts[2]);
         int semester = Integer.parseInt(parts[3]);
         int credits = Integer.parseInt(parts[4]);
-        int progressPercentage = Integer.parseInt(parts[5]);
 
         assert year > 0 : "Year must be positive";
         assert semester == 1 || semester == 2 : "Invalid semester";
         assert credits > 0 : "Credits must be positive";
-        assert progressPercentage >= 0 && progressPercentage <= 100 : "Progress percentage must be between 0 and 100";
 
         Mod mod = new Mod(name, year, semester, credits);
         if (status.equals("1")) {
@@ -107,34 +105,32 @@ public class Storage {
         return mod;
     }
 
-    private Mod parseCurrentEightPart(String[] parts) {
+    private Mod parseCurrentSevenPart(String[] parts) {
         String status = parts[0];
         String name = parts[1];
         int year = Integer.parseInt(parts[2]);
         int semester = Integer.parseInt(parts[3]);
         int credits = Integer.parseInt(parts[4]);
-        int progressPercentage = Integer.parseInt(parts[5]);
-        String completionType = parts[6];
-        String prereqText = parts[7];
 
-        assert year > 0 : "Year must be positive";
-        assert semester == 1 || semester == 2 : "Invalid semester";
-        assert credits > 0 : "Credits must be positive";
-        assert completionType != null : "Completion type cannot be null";
-        assert prereqText != null : "Prerequisite text cannot be null";
-        assert progressPercentage >= 0 && progressPercentage <= 100 : "Progress percentage must be between 0 and 100";
+        String completionType;
+        String prereqText;
+
+        if (parts.length == 7) {
+            completionType = parts[5];
+            prereqText = parts[6];
+        } else { // 8 parts
+            int progress = Integer.parseInt(parts[5]); // you can use or ignore this
+            completionType = parts[6];
+            prereqText = parts[7];
+        }
 
         Mod mod = new Mod(name, year, semester, credits);
 
-        // Set status based on the first column
         if (status.equals("1")) {
             mod.setToDone();
         }
 
-        // Set the specific type (NORMAL, EXEMPTED, TRANSFERRED)
         mod.setCompletionType(completionType);
-
-        // Set prerequisites
         mod.setPrerequisites(Mod.parsePrerequisites(prereqText));
 
         return mod;
