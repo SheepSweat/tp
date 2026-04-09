@@ -2,7 +2,6 @@ package seedu.modtrack.model;
 
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -68,7 +67,7 @@ public class ModTest {
         Mod mod = new Mod("CS2113", 2, 1, 4);
         mod.addPrerequisite("CS1010");
         // Manual string building to verify format
-        String expected = "0 | CS2113 | 2 | 1 | 4 | 0 | NORMAL | CS1010";
+        String expected = "0 | CS2113 | 2 | 1 | 4 | NORMAL | CS1010";
         assertEquals(expected, mod.toFileFormat());
     }
 

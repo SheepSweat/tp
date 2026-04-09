@@ -1,5 +1,7 @@
-package seedu.modtrack.model;
+package seedu.modtrack.commands;
 
+import seedu.modtrack.referencelist.ReferenceList;
+import seedu.modtrack.module.Mod;
 import java.util.ArrayList;
 
 public class ListCompareCommand extends Command {
@@ -32,7 +34,7 @@ public class ListCompareCommand extends Command {
         assert (completed.size() + missing.size()) == requiredModules.size()
                 : "Total categorized modules must equal total required modules";
 
-        printComparison(completed, missing);
+        this.printComparison(completed, missing);
     }
 
     private void printComparison(ArrayList<Mod> completed, ArrayList<Mod> missing) {

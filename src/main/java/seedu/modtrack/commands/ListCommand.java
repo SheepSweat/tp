@@ -1,6 +1,8 @@
-package seedu.modtrack.model;
+package seedu.modtrack.commands;
 
 import java.util.ArrayList;
+
+import seedu.modtrack.module.Mod;
 
 public class ListCommand extends Command {
 

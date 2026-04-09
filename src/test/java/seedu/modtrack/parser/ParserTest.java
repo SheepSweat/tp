@@ -8,7 +8,6 @@ import seedu.modtrack.model.DeleteCommand;
 import seedu.modtrack.model.ExitCommand;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParserTest {

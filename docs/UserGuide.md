@@ -68,6 +68,14 @@ Format: `list c/`
 Show general graduation requirement pillars for CE students.
 Format: `show grad req`
 
+### Clearing all data: `clear`
+
+Deletes all currently tracked modules from the list.
+> [!WARNING]
+> This action is irreversible. All module data, including completion status and prerequisites, will be permanently removed.
+
+Format: `clear`
+
 ### Exiting the program: `exit`
 Saves your data and exits.
 Format: `exit`
@@ -89,4 +97,5 @@ Format: `exit`
 | **List All** | `list` | `list` |
 | **Compare Grad** | `list c/` | `list c/` |
 | **Show Requirements**| `show grad req` | `show grad req` |
+| **Clear All** | `clear` | `clear` |
 | **Exit** | `exit` | `exit` |

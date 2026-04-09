@@ -1,13 +1,15 @@
-package seedu.modtrack.model;
+package seedu.modtrack.referencelist;
 
 import java.util.ArrayList;
+
+import seedu.modtrack.module.Mod;
 
 public class ReferenceList {
 
     public static ArrayList<Mod> list;
 
     public ReferenceList() {
-        this.list = new ArrayList<>();
+        ReferenceList.list = new ArrayList<>();
     }
 
     public void populateReferenceList(ArrayList<Mod> list) {
@@ -70,7 +72,7 @@ public class ReferenceList {
         list.add(newmod);
     }
 
-    public static ArrayList<Mod>  getReferenceList() {
-        return list;
+    public static ArrayList<Mod> getReferenceList() {
+        return ReferenceList.list;
     }
 }

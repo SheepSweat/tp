@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StorageTest {
-    private Storage storage;
     private static final String TEST_FILE_PATH = "./data/ModTrack.txt";
+    private Storage storage;
 
     @BeforeEach
     public void setUp() {

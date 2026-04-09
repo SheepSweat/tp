@@ -1,4 +1,4 @@
-package seedu.modtrack.model;
+package seedu.modtrack.module;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +9,8 @@ public class Mod {
     protected int semester;
     protected int modCredits;
     protected boolean isComplete;
+
+    protected int progressPercentage;
     protected String completionType; // NORMAL, EXEMPTED, TRANSFERRED
     protected ArrayList<String> prerequisites;
 
@@ -18,35 +20,45 @@ public class Mod {
         this.semester = semester;
         this.modCredits = credits;
         this.isComplete = false;
+        this.progressPercentage = 0;
         this.completionType = "NORMAL";
         this.prerequisites = new ArrayList<>();
     }
 
     public void setToDone() {
         this.isComplete = true;
+        this.progressPercentage = 100;
         this.completionType = "NORMAL";
     }
 
     public void setToUndone() {
         this.isComplete = false;
+        this.progressPercentage = 0;
         this.completionType = "NORMAL";
     }
 
     public void setToExempted() {
         this.isComplete = true;
+        this.progressPercentage = 100;
         this.completionType = "EXEMPTED";
     }
 
     public void setToTransferred() {
         this.isComplete = true;
+        this.progressPercentage = 100;
         this.completionType = "TRANSFERRED";
     }
 
     public void setProgressPercentage(int percentage) {
+        this.progressPercentage = percentage;
 
         if (this.completionType.equals("NORMAL")) {
             this.isComplete = (percentage == 100);
         }
+    }
+
+    public int getProgressPercentage() {
+        return this.progressPercentage;
     }
 
     public String getCompletionType() {
@@ -108,6 +120,7 @@ public class Mod {
         modString += "Year: YEAR" + this.year + "\n";
         modString += "Semester: SEM" + this.semester + "\n";
         modString += "Status: " + this.getDisplayStatus() + "\n";
+        modString += "Progress: " + this.progressPercentage + "%\n";
         modString += "Modular Credits: " + this.modCredits + "\n";
         modString += "Prerequisites: "
                 + (this.prerequisites.isEmpty() ? "None" : String.join(", ", this.prerequisites)) + "\n";
@@ -121,6 +134,7 @@ public class Mod {
                 + this.year + " | "
                 + this.semester + " | "
                 + this.modCredits + " | "
+                + this.progressPercentage + " | "
                 + this.completionType + " | "
                 + prereqText;
     }

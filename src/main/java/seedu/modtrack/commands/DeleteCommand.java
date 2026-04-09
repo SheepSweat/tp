@@ -1,5 +1,6 @@
-package seedu.modtrack.model;
+package seedu.modtrack.commands;
 
+import seedu.modtrack.module.Mod;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ public class DeleteCommand extends Command {
 
     @Override
     public void execute(ArrayList<Mod> list) {
-        logger.log(Level.INFO, "Attempting to delete module: {0}", modName);
+        logger.log(Level.INFO, "Attempting to delete module: {0}", this.modName);
 
         // Internal sanity check: The list should not be null
         assert list != null : "Module list should not be null during deletion";
@@ -45,7 +46,7 @@ public class DeleteCommand extends Command {
         }
 
         // If we reach here, the module wasn't found
-        logger.log(Level.WARNING, "Module {0} was not found in the list.", modName);
+        logger.log(Level.WARNING, "Module {0} was not found in the list.", this.modName);
         System.out.println("Module not found.");
 
         // Assertion: Ensure the list size remained unchanged if deletion failed

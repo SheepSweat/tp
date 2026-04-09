@@ -2,7 +2,7 @@ package seedu.modtrack.ui;
 
 import java.util.ArrayList;
 
-import seedu.modtrack.model.Mod;
+import seedu.modtrack.module.Mod;
 
 public class Ui {
 
