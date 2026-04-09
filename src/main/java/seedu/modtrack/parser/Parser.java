@@ -2,20 +2,7 @@ package seedu.modtrack.parser;
 
 import java.util.ArrayList;
 
-import seedu.modtrack.model.AddCommand;
-import seedu.modtrack.model.AddPrereqCommand;
-import seedu.modtrack.model.Command;
-import seedu.modtrack.model.DeleteCommand;
-import seedu.modtrack.model.ExitCommand;
-import seedu.modtrack.model.ExemptCommand;
-import seedu.modtrack.model.FindCommand;
-import seedu.modtrack.model.ListCommand;
-import seedu.modtrack.model.ListCompareCommand;
-import seedu.modtrack.model.MarkCommand;
-import seedu.modtrack.model.ShowGradReqCommand;
-import seedu.modtrack.model.ShowPrereqCommand;
-import seedu.modtrack.model.TransferCommand;
-import seedu.modtrack.model.UnmarkCommand;
+import seedu.modtrack.model.*;
 
 public class Parser {
 
@@ -51,6 +38,8 @@ public class Parser {
             return this.parseList(arguments);
         case "show":
             return this.parseShow(arguments);
+        case "clear":
+            return new ClearCommand();
         case "exit":
         case "bye":
             return new ExitCommand();

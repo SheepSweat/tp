@@ -37,12 +37,13 @@ public class AddCommand extends Command {
         int initialSize = list.size();
 
         for (Mod existingMod : list) {
-            if (existingMod.getModName().equalsIgnoreCase(this.modName)) {
+            if (existingMod.getModName().trim().equalsIgnoreCase(this.modName.trim())) {
                 logger.log(Level.WARNING, "Duplicate detected for module: {0}", modName);
 
                 System.out.println("----------------------------------------------------");
                 if (!existingMod.getIsComplete()) {
                     System.out.println("This module already exists in the list, but is currently incomplete.");
+                    System.out.println("To mark this module as complete, use: mark n/" + existingMod.getModName());
                 } else {
                     System.out.println("This module is already in the list!");
                 }
