@@ -19,9 +19,19 @@ monitor Modular Credits, and identify missing graduation pillars without relying
 ## Features
 
 ### Adding a module: `add`
-Adds a module to the tracker.
-Format: `add n/NAME y/Year s/SEMESTER`
-Example: `add n/CS2113 y/YEAR2 s/SEM1`
+
+Adds a module to the tracker. By default, modules are added with 4 Modular Credits (MCs) unless specified otherwise.
+
+Format: `add n/NAME y/YEAR s/SEMESTER [c/CREDITS]`
+
+* **NAME**: The module code (e.g., CS2113).
+* **YEAR**: The academic year (e.g., YEAR1, YEAR2).
+* **SEMESTER**: The semester (e.g., SEM1, SEM2).
+* **CREDITS**: (Optional) The number of modular credits. Must be either **2** or **4**. Defaults to 4 if omitted.
+
+Examples:
+* `add n/CS2113 y/YEAR2 s/SEM1` (Adds CS2113 with default 4 MCs)
+* `add n/EG3301R y/YEAR3 s/SEM1 c/2` (Adds EG3301R with 2 MCs)
 
 ### Deleting a module: `delete`
 Removes a module from the tracker.
