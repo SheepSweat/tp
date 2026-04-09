@@ -27,6 +27,7 @@ public class ListCompareCommand extends Command {
 
             if (isFoundAndComplete) {
                 completed.add(reqMod);
+                reqMod.setToDone();
             } else {
                 missing.add(reqMod);
             }

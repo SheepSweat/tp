@@ -27,7 +27,7 @@ public class Ui {
         System.out.println("No modules found in the list.");
     }
 
-    public void showExistingIncompleteMoudleError(Mod existingMod) {
+    public void showExistingIncompleteModuleError(Mod existingMod) {
         System.out.println("This module already exists in the list, but is currently incomplete.");
         System.out.println("To mark this module as complete, use: mark n/" + existingMod.getModName());
     }
@@ -80,7 +80,7 @@ public class Ui {
 
     public void showMatchingModule(Mod mod) {
         System.out.println("--------------------");
-        System.out.print(mod);
+        System.out.println(mod);
     }
 
     public void showTransferredModule(Mod mod) {
@@ -136,7 +136,6 @@ public class Ui {
             System.out.println("  (None yet)");
         } else {
             for (Mod mod : completedModules) {
-                mod.setToDone();
                 System.out.println(mod);
             }
         }
