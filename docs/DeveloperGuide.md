@@ -80,16 +80,41 @@ For every user input, `ModTrack` coordinates the following sequence:
 
 ### UI Component
 
-The UI component is responsible for handling interactions between the user and the system. In **ModTrack**, the UI is implemented as a Command Line Interface (CLI).
+![Structure of the UI Component](images/UiComponentDiagram.png)
 
-The UI reads user input from standard input and displays output to standard output. It delegates the processing of user commands to the `Parser` component.
+**Figure X. Structure of the UI Component**
 
-The main responsibilities of the UI component are:
-- Reading user input
-- Displaying responses from commands
-- Handling application start-up and shutdown messages
+The `Ui` component is responsible for handling all user interactions in ModTrack via the Command Line Interface (CLI).
 
-The UI does not contain any business logic, adhering to separation of concerns.
+ModTrack uses a **text-based UI**, where all interactions are displayed through standard output (`System.out`).
+
+The `Ui` component,
+
+* displays messages to the user (e.g., welcome message, errors, confirmations).
+* formats and prints module-related information (e.g., lists, prerequisites, comparisons).
+* acts as the final output stage after command execution.
+* does **not** handle any business logic or data manipulation.
+
+#### Structure
+
+The `Ui` component consists of a single main class:
+
+- `Ui`
+  - Contains methods responsible for displaying specific outputs.
+  - Examples:
+    - `showAddModule(...)`
+    - `showDeletedModule(...)`
+    - `showList(...)`
+    - `showPrerequisites(...)`
+    - `showComparedList(...)`
+
+Each method is designed to handle a **single responsibility**, ensuring modularity and ease of maintenance.
+
+#### How the UI interacts with other components
+
+The following sequence diagram shows how the `Ui` component interacts with other components when a user executes the `add` command.
+
+![Sequence diagram of the UI Component](images/UiSequenceDiagram.png)
 
 ### Command Component
 The Command mechanism is facilitated by the abstract `Command` class. It serves as the base for all executable actions within **ModTrack**, allowing the `Parser` to delegate logic to specific command objects.
