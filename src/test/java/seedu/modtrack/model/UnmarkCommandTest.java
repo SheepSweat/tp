@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import seedu.modtrack.commands.*;
+import seedu.modtrack.module.Mod;
 
 class UnmarkCommandTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();

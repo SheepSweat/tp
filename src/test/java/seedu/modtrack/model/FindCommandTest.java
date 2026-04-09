@@ -8,6 +8,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import seedu.modtrack.commands.*;
+import seedu.modtrack.module.Mod;
 
 class FindCommandTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
