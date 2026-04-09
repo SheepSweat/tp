@@ -37,13 +37,13 @@
 
 ### Steps
 
-1. Download the tp.jar file from release v1.0 into the folder where you plan to run the application
+1. Download the modtrack.jar file from release v2.0 into the folder where you plan to run the application
 
 2. Go to project folder where the jar file is located
 
 3. Run the application using java
 ```
-java -jar tp.jar
+java -jar modtrack.jar
 ```
 
 ## Design
@@ -199,16 +199,16 @@ User inputs `List` `List c/`
 The List feature is executed by the `ListCommand.java` (`List`) or the `ListCompareCommand. java` (`List c/`) class.
 It extends from the abstract class `Command` and overrides the `execute()` method.
 
-V1.0 Current implementation:
+**ListCommand implementation:**
 The `execute()` method in the `ListCommand` class iterates through the list of modules tracked by the program and prints out
 all modules currently tracked using the `toString()` method of the mod class.
 
-V2.0 implementation:
+**ListCompareCommand implementation:**
 The `execute()` method in the `ListCompareCommand` class iterates through the list of modules tracked by the program
 and compares it to a predefined list of all modules required to be completed by a computer engineering student. prints
 output completed and uncompleted modules in 2 separate lists using the `toString()` method of the mod class.
 
-Design Considerations:
+#### Design Considerations:
 * The list feature is implemented this way because we want to allow the user the ability to view their modules tracked
   as is or against the modules required to graduate.
 * Under `ListCompareCommand` we compare the list of modules tracked to a predefined list, populated on start up
@@ -220,10 +220,50 @@ Design Considerations:
 
 #### Sequence Diagram
 `List` command Sequence Diagram
-![img_2.png](list2.png)
+![img_10.png](ListCommand.png)
 
 `List c/` command Sequence Diagram 
-![img_1.png](list1.png)
+![img_10.png](ListCompareCommand.png)
+
+#### 4. Find Feature
+
+The FindCommand allows users to search for modules within their tracked list using a keyword. 
+The search is case-insensitive and matches any module whose name contains the provided keyword.
+
+**Implementation**
+The `execute()` method in the `FindCommand` class iterates through the list of modules tracked by the program,
+printing any module that contains the given module name.If no matches are found, a "No matching module found" message 
+is displayed to the user.
+
+#### Design Considerations:
+* The find feature implements a linear search method of searching for the given module.
+* Pros: Very simple to implement and maintain. It is perfectly efficient for a student's module list (typically < 100 modules).
+* Cons:  If the list were to grow to thousands of modules, $O(n)$ time complexity might become noticeable.
+* Alternative considered: Using a HashMap for $O(1)$ lookups.
+* Reason for skipping: Given that the module list is less than 100 modules for the CEG curriculum, using a hash map 
+serves no considerable benefit and would needlessly complicate the code hence more prone to implementation bugs.
+#### Sequence Diagram
+![img_10.png](Find.png)
+
+#### 5. Exempt Feature
+The ExemptCommand allows users to mark a specific module as Exempted. This is typically used for modules where the 
+student has received a waiver or credit transfer, meaning the module is considered "cleared" without a traditional 
+grade or progress tracking.
+
+**Implementation**
+
+The command performs a linear search through the taskList using the provided modName. The search is case-insensitive to 
+improve user experience.Once a matching module is found, the command calls mod.setToExempted(). This method 
+(internal to the Mod class) typically sets the module's status to a special "Exempted" state. To optimize performance, 
+the method uses a return statement immediately after finding and updating the module, preventing unnecessary iterations.
+If the loop completes without finding a match, the command provides feedback to the user stating that the module was not found.
+
+#### Design Considerations:
+* The design choice was made to encapsulate the "Exemption" logic within the Mod class rather than the ExemptCommand.
+* This ensures that when a module is exempted, all related data (like completion status or modular credits) is updated 
+consistently in one place, preventing "divergent change" bugs where the command forgets to update a specific flag.
+#### Sequence Diagram
+![img_10.png](Exempt.png)
 
 #### 4. Mark Feature
 
@@ -344,7 +384,7 @@ exit
 ```
 ##### Sequence Diagram
 
-![img_4.png](img_4.png)
+![img_10.png](Exit.png)
 The sequence diagram above shows how the exit command is handled:
 1. The user enters the `exit` command
 2. The input is parsed into an `ExitCommand`
@@ -366,7 +406,7 @@ show grad req
 ```
 #### Sequence Diagram
 
-![img_5.png](img_5.png)
+![img_10.png](graduation requirement diagram.png)
 The sequence diagram illustrates how graduation requirements are displayed:
 1. The user enters the `grad` command
 2. The Parser creates a `GradCommand`
@@ -425,4 +465,57 @@ This application provides:
 
 ## Instructions for manual testing
 
-{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+1. Initial Launch and Setup
+
+Clear existing data: If you have used the app before, delete the data.txt file (or the directory specified in your Storage settings) to start with a clean state.
+
+Launch the app: Run the program.
+
+Expected Result: The UI should display a welcome message and indicate that a new data file has been created.
+
+2. Loading Sample Data
+
+Close the app.
+
+Open the data.txt file in a text editor.
+
+Paste the following sample lines (adjust the format to match your specific toFileFormat logic):
+
+0 | CS1010 | 1 | 1 | 4 | NORMAL | -
+0 | MA1511 | 1 | 1 | 2 | NORMAL | -
+0 | CS2113 | 2 | 2 | 4 | NORMAL | -
+
+Relaunch the app.
+
+Expected Result: Run the list command; it should now display these three modules correctly.
+
+3. Testing Core Commands
+
+Find Functionality
+(Test Case: find CS)
+
+Expected Result: Displays CS1010 and CS2113.
+
+Test Case: find non-existent
+
+Expected Result: Displays "No matching module found."
+
+Exemption Logic
+(Test Case: exempt CS2113)
+
+Expected Result: Confirmation message "Module marked as exempted: CS2113". Running list should show the status has changed.
+
+Graduation Requirements
+(Test Case: grad)
+
+Expected Result: Displays the static list of CEG requirements as defined in the Ui class.
+
+4. Data Persistence (Storage)
+
+Add a new module: add n/MA1508E y/YEAR1 s/SEM2.
+
+Exit the app using exit.
+
+Re-open the app.
+
+Expected Result: The module MA1508E should still be present in the list.
