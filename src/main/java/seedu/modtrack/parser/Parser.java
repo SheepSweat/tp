@@ -175,7 +175,7 @@ public class Parser {
 
         int nextPrefixIndex = input.length();
 
-        String[] prefixes = { "n/", "y/", "s/", "t/", "p/" };
+        String[] prefixes = {"n/", "y/", "s/", "t/", "p/"};
         for (String p : prefixes) {
             if (p.equals(prefix)) {
                 continue;
@@ -200,18 +200,27 @@ public class Parser {
     private int parseYear(String text) throws InvalidCommandException {
         String normalized = text.toUpperCase().replace("YEAR", "").trim();
         try {
-            return Integer.parseInt(normalized);
+            int year = Integer.parseInt(normalized);
+            if (year < 1 || year > 4) {
+                throw new InvalidCommandException("Year must be between 1 and 4 (e.g., YEAR1, YEAR2...).");
+            }
+            return year;
         } catch (NumberFormatException e) {
-            throw new InvalidCommandException("Year must be in the form YEAR1, YEAR2, YEAR3...");
+            throw new InvalidCommandException("Year must be in the form YEAR1, YEAR2, YEAR3 or YEAR4.");
         }
     }
 
     private int parseSemester(String text) throws InvalidCommandException {
         String normalized = text.toUpperCase().replace("SEM", "").trim();
         try {
-            return Integer.parseInt(normalized);
+            int semester = Integer.parseInt(normalized);
+            if (semester < 1 || semester > 2) {
+                throw new InvalidCommandException("Semester must be 1 or 2 (e.g., SEM1, SEM2).");
+            }
+            return semester;
         } catch (NumberFormatException e) {
             throw new InvalidCommandException("Semester must be in the form SEM1 or SEM2.");
         }
     }
 }
+
