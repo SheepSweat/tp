@@ -74,17 +74,4 @@ class FindCommandTest {
         assertTrue(output.contains("No modules found in the list."),
                 "The 'not found' feedback message was missing for a non-existent keyword.");
     }
-
-//    @Test
-//    void execute_multipleMatches_printsAllModules() {
-//        this.modList.add(new Mod("CS2101", 2, 1, 4));
-//
-//        FindCommand command = new FindCommand("CS");
-//        command.execute(this.modList, this.ui);
-//
-//        String output = this.outContent.toString();
-//
-//        assertTrue(output.contains("CS2113"), "First matching module missing");
-//        assertTrue(output.contains("CS2101"), "Second matching module missing");
-//    }
 }
