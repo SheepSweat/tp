@@ -52,19 +52,21 @@ public class Storage {
                     continue;
                 }
 
-                String[] parts = line.split("\\s*\\|\\s*");
-
-                // Strictly enforce 7 parts
-                if (parts.length == 7) {
-                    list.add(parseLine(parts));
-                } else {
-                    System.out.println("Skipping malformed line: " + line);
+                try {
+                    String[] parts = line.split("\\s*\\|\\s*");
+                    if (parts.length == 7) {
+                        list.add(parseLine(parts));
+                    } else {
+                        System.out.println("Skipping malformed line (wrong format): " + line);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Skipping line with invalid numbers: " + line);
+                } catch (Exception e) {
+                    System.out.println("Skipping corrupted line: " + line);
                 }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Storage file not found.");
-        } catch (Exception e) {
-            System.out.println("Error loading storage: " + e.getMessage());
         }
         return list;
     }
