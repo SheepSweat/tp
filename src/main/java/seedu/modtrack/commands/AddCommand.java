@@ -18,7 +18,7 @@ public class AddCommand extends Command {
     public AddCommand(String name, int year, int semester, int credits) {
         assert name != null && !name.trim().isEmpty() : "Module name cannot be null or empty";
         assert year >= 1 && year <= 4 : "Year should be within university range";
-        assert credits == 2 || credits == 4 : "Module credits must be 2 or 4";
+        assert credits == 2 || credits == 4 || credits == 8 || credits == 10: "Module credits must be 2, 4, 8 or 10";
 
         this.modName = name;
         this.year = year;

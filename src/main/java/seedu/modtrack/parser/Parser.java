@@ -53,9 +53,15 @@ public class Parser {
         case "show":
             return this.parseShow(arguments);
         case "clear":
+            if (!arguments.isEmpty()) {
+                throw new InvalidCommandException("The 'clear' command does not take any arguments.");
+            }
             return new ClearCommand();
         case "exit":
         case "bye":
+            if (!arguments.isEmpty()) {
+                throw new InvalidCommandException("The '" + commandWord + "' command does not take any arguments.");
+            }
             return new ExitCommand();
         default:
             throw new InvalidCommandException("Invalid command.");
@@ -73,12 +79,12 @@ public class Parser {
             try {
                 credits = Integer.parseInt(this.extractValue(arguments, "c/"));
             } catch (NumberFormatException e) {
-                throw new InvalidCommandException("Module credits must be a number (2 or 4).");
+                throw new InvalidCommandException("Module credits must be a number (2, 4, 8 or 10).");
             }
         }
 
-        if (credits != 2 && credits != 4) {
-            throw new InvalidCommandException("Module credits must be either 2 or 4.");
+        if (credits != 2 && credits != 4 && credits != 8 && credits != 10) {
+            throw new InvalidCommandException("Module credits must be 2, 4, 8 or 10.");
         }
 
         int year = this.parseYear(yearText);
@@ -184,7 +190,7 @@ public class Parser {
 
         int nextPrefixIndex = input.length();
 
-        String[] prefixes = {"n/", "y/", "s/", "t/", "p/"};
+        String[] prefixes = {"n/", "y/", "s/", "t/", "p/", "c/"};
         for (String p : prefixes) {
             if (p.equals(prefix)) {
                 continue;
