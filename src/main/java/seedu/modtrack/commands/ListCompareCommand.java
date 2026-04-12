@@ -16,18 +16,27 @@ public class ListCompareCommand extends Command {
         ArrayList<Mod> missing = new ArrayList<>();
 
         for (Mod reqMod : requiredModules) {
-            boolean isFoundAndComplete = false;
+            boolean isFulfilled = false;
 
             for (Mod task : taskList) {
-                if (task.getModName().equalsIgnoreCase(reqMod.getModName())&& task.getIsComplete()) {
-                    isFoundAndComplete = true;
+                String reqName = reqMod.getModName().trim().toLowerCase();
+                String taskName = task.getModName().trim().toLowerCase();
+                if (reqName.contains(taskName)&& task.getIsComplete()) {
+                    boolean isNormalComplete = task.getIsComplete();
+                    boolean isTransferred = task.getCompletionType().equals("TRANSFERRED");
+                    boolean isExempted = task.getCompletionType().equals("EXEMPTED");
+                    if (isNormalComplete || isTransferred || isExempted) {
+                        isFulfilled = true;
+                        reqMod.setToDone();
+                        reqMod.setCompletionType(task.getCompletionType());
+
+                    }
                     break;
                 }
             }
 
-            if (isFoundAndComplete) {
+            if (isFulfilled) {
                 completed.add(reqMod);
-                reqMod.setToDone();
             } else {
                 reqMod.setToUndone();
                 missing.add(reqMod);

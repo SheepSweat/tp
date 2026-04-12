@@ -134,7 +134,7 @@ public class Ui {
         this.showDivider();
         System.out.println("Comparison with Graduation Requirements (CE):");
 
-        System.out.println("\n✔ COMPLETED MODULES:");
+        System.out.println("\n[V] COMPLETED MODULES:");
         if (completedModules.isEmpty()) {
             System.out.println("  (None yet)");
         } else {
@@ -143,7 +143,7 @@ public class Ui {
             }
         }
 
-        System.out.println("\n✘ MISSING/UNCOMPLETED MODULES:");
+        System.out.println("\n[X] MISSING/UNCOMPLETED MODULES:");
         if (missingModules.isEmpty()) {
             System.out.println("  Congratulations! All requirements met.");
         } else {

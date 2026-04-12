@@ -1,9 +1,12 @@
 package seedu.modtrack.command;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
@@ -18,6 +21,8 @@ public class ClearCommandTest {
     private ArrayList<Mod> list;
     private Ui ui;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+    private final InputStream originalIn = System.in;
 
     @BeforeEach
     public void setUp() {
@@ -31,8 +36,20 @@ public class ClearCommandTest {
         this.list.add(new Mod("MA1511", 1, 1, 4));
     }
 
+    @AfterEach
+    public void tearDown() {
+        System.setOut(this.originalOut);
+        System.setIn(this.originalIn); // Restore System.in after every test
+    }
+
+    private void provideInput(String data) {
+        ByteArrayInputStream testIn = new ByteArrayInputStream(data.getBytes());
+        System.setIn(testIn);
+    }
     @Test
     public void execute_populatedList_clearsAllModules() {
+
+        provideInput("yes\n");
         ClearCommand command = new ClearCommand();
         command.execute(this.list, this.ui);
 
@@ -47,25 +64,27 @@ public class ClearCommandTest {
 
     @Test
     public void execute_emptyList_remainsEmpty() {
+        provideInput("yes\n");
         ArrayList<Mod> emptyList = new ArrayList<>();
         ClearCommand command = new ClearCommand();
 
         command.execute(emptyList, this.ui);
 
-        assertTrue(emptyList.isEmpty(), "Empty list should remain empty");
-        assertEquals(0, emptyList.size());
+        assertTrue(emptyList.isEmpty());
     }
 
     @Test
-    public void execute_preservesListReference() {
-        // This ensures the command clears the existing list rather than
-        // assigning it to a new empty object, which could break other references.
-        ArrayList<Mod> originalReference = this.list;
-        ClearCommand command = new ClearCommand();
+    public void execute_confirmNo_doesNotClearModules() {
+        // 1. Simulate the user typing "no"
+        provideInput("no\n");
 
+        int originalSize = this.list.size();
+        ClearCommand command = new ClearCommand();
         command.execute(this.list, this.ui);
 
-        assertTrue(originalReference == this.list, "The list reference should remain the same");
-        assertTrue(originalReference.isEmpty());
+        // Verify list state - Should NOT be empty
+        assertEquals(originalSize, this.list.size(), "List should NOT be cleared if user says no");
+        String output = this.outContent.toString();
+        assertTrue(output.contains("Clear operation cancelled."));
     }
 }

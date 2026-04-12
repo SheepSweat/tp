@@ -16,22 +16,24 @@ public class FindCommand extends Command {
     public void execute(ArrayList<Mod> list, Ui ui) {
         ui.showDivider();
         System.out.println("Matching modules:");
-        
-        Mod modFound = this.modMatchFound(list);
-        if (modFound != null) {
-            ui.showMatchingModule(modFound);
+
+        ArrayList<Mod> matchingModules = this.findAllMatches(list);
+        if (!matchingModules.isEmpty()) {
+            for  (Mod modFound : matchingModules) {
+                ui.showMatchingModule(modFound);
+            }
         } else {
             ui.showNoModulesFound();
         }
-
     }
 
-    public Mod modMatchFound(ArrayList<Mod> list) {
+    public ArrayList<Mod> findAllMatches(ArrayList<Mod> list) {
+        ArrayList<Mod> results = new ArrayList<>();
         for (Mod mod : list) {
             if (mod.getModName().toLowerCase().contains(this.keyword)) {
-                return mod;
+                results.add(mod);
             }
         }
-        return null;
+        return results;
     }
 }

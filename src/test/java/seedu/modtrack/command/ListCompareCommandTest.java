@@ -71,8 +71,8 @@ class ListCompareCommandTest {
         String output = this.outContent.toString();
 
         // 3. Assert - Use indexes to ensure modules are in the right sections
-        int completedHeader = output.indexOf("✔ COMPLETED MODULES:");
-        int missingHeader = output.indexOf("✘ MISSING/UNCOMPLETED MODULES:");
+        int completedHeader = output.indexOf("[V] COMPLETED MODULES:");
+        int missingHeader = output.indexOf("[X] MISSING/UNCOMPLETED MODULES:");
 
         int cs1010Index = output.indexOf("CS1010");
         int cs2113Index = output.indexOf("CS2113");
