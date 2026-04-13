@@ -107,6 +107,29 @@ Module marked as transferred:
 EE2026
 ```
 
+### Finding a module: 'find'
+Searches for modules in your tracker using a keyword. The search is case-insensitive and matches partial module names.
+Format: `find n/NAME`
+Example: `find n/CS2113`
+```text
+find n/CS2113
+----------------------------------------------------
+Matching modules:
+----------------------------------------------------
+Name: CS2113
+Year: YEAR2
+Semester: SEM1
+Status: Incomplete
+Modular Credits: 4
+Prerequisites: None
+
+find n/CS1010
+----------------------------------------------------
+Matching modules:
+No modules found in the list.
+```
+
+
 ### Adding prerequisites: `prereq add`
 Adds prerequisite modules to an existing entry in your list.
 Format: `prereq add n/NAME p/PREREQ1,PREREQ2`
@@ -352,6 +375,10 @@ Module does not exist. Choose another number.
 ```
 Resolution:
 - Ensure the module exists before marking it as exempted.
+
+### Finding a module: 'find'
+
+Errors have been covered ontop with **Missing prefixes** and **Empty Fields**
 
 ### Handling transferred modules: transfer
 
