@@ -185,7 +185,7 @@ public class Ui {
         this.showDivider();
     }
 
-    public boolean getClearConfirmation() {
+    public String showClearConfirmationPrompt() {
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println("WARNING: This will delete ALL tracked modules.");
         System.out.print("Are you sure? (type 'yes' to confirm): ");
@@ -193,7 +193,13 @@ public class Ui {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine().trim().toLowerCase();
 
-        return input.equals("yes");
+        if (input.equals("yes")) {
+            System.out.println("Confirmed. Proceeding to clear all modules.");
+        } else {
+            System.out.println("Clear operation cancelled. No changes made.");
+        }
+        scanner.close();
+        return input;
     }
 
     public void showGradReq() {
