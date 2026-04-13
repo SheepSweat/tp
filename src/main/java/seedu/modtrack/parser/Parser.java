@@ -222,6 +222,11 @@ public class Parser {
             throw new InvalidCommandException("Empty value for: " + prefix);
         }
 
+        if (prefix.equals("n/") && value.contains(" ")) {
+            throw new InvalidCommandException(
+                    "Module name must be a single word with no spaces. Did you add extra text after the module name?");
+        }
+
         return value;
     }
 
@@ -250,5 +255,6 @@ public class Parser {
             throw new InvalidCommandException("Semester must be in the form SEM1 or SEM2.");
         }
     }
+
 }
 

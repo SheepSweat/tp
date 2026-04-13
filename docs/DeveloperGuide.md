@@ -122,7 +122,7 @@ The Command mechanism is facilitated by the abstract `Command` class. It serves 
 Class Diagram:
 ![img_10.png](  CommandClassDiagram.png)
 
-The abstract `Command` class defines a core method: `execute(ArrayList<Mod> list)`. Concrete subclasses implement this method to perform specific operations on the module list.
+The abstract `Command` class defines a core method: `execute(ArrayList<Mod> list, Ui ui)`. Concrete subclasses implement this method to perform specific operations on the module list.
 
 While the system includes several commands (such as `MarkCommand`, `ListCommand`, and `ExitCommand`), the following classes represent the primary data-manipulation logic:
 
@@ -130,7 +130,7 @@ While the system includes several commands (such as `MarkCommand`, `ListCommand`
 ```java
 public abstract class Command {
     protected boolean isExit = false;
-    public abstract void execute(ArrayList<Mod> list);
+    public abstract void execute(ArrayList<Mod> list, Ui ui);
     public boolean isExit() { return this.isExit; }
 }
 ```
