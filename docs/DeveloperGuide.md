@@ -663,89 +663,96 @@ The sequence diagram illustrates how graduation requirements are displayed:
 
 #### 11. Add Prerequisite Feature
 
-The **`AddPrereqCommand`** allows the user to add one or more prerequisite modules to an existing tracked module.
+The **`AddPrereqCommand`** allows users to associate prerequisite modules with an existing module in their tracker. This command is invoked using the `prereq add` syntax.
 
 **Implementation**
 
-The prerequisite-adding mechanism is facilitated by the `AddPrereqCommand` class. When a user executes the `addprereq` command, the `execute()` method iterates through the module list to find a module whose name matches the provided `modName` (case-insensitive).
+The prerequisite-adding mechanism is facilitated by the `AddPrereqCommand` class. Upon execution, the `execute()` method performs a two-stage logic check:
 
-If a matching module is found:
+1.  **Target Identification**: It iterates through the `taskList` to find a module that matches the provided `modName` (case-insensitive).
+2.  **Validation and Insertion**: For each prerequisite string provided, it performs the following checks before calling `mod.addPrerequisite()`:
+    * **Self-Referencing Check**: Prevents a module from being its own prerequisite.
+    * **Circular Dependency Check**: Uses the `findModule()` helper to ensure the target module is not already a prerequisite of the module being added.
 
-* each prerequisite in the provided list is added to the module
-* duplicate prerequisites are ignored to prevent redundancy
+If a circular dependency is detected, the command triggers `ui.showCircularDependencyWarning()` and skips that specific prerequisite.
 
-If no matching module is found:
+##### **Parsing Logic**
 
-* the system does not modify the list
+The `Parser` identifies the `prereq` keyword followed by the `add` sub-command and extracts:
+* The target module name from the `n/` prefix.
+* An `ArrayList<String>` of prerequisite codes from the `p/` prefix.
 
-This feature allows users to track module dependencies for better academic planning.
+The extracted values are used to construct an `AddPrereqCommand` object, which is then passed to the main execution loop in `ModTrack`.
 
-**Example:**
+##### **Class Interaction**
+
+The following sequence describes the interaction during a prerequisite addition:
+1.  **Parser**: Instantiates `AddPrereqCommand` with the target name and prerequisite list.
+2.  **AddPrereqCommand**: Searches the `taskList` for the target `Mod` object.
+3.  **AddPrereqCommand -> Mod**: Calls `addPrerequisite(prereq)` if all safety checks (self-referencing and circularity) pass.
+4.  **AddPrereqCommand -> Ui**: Calls `ui.showUpdatedPrerequisites(mod)` and `ui.listPrerequisite(mod)` to confirm the changes.
+5.  **Storage**: Persists the updated `taskList` to the local data file.
+
+##### **Edge Cases and Error Handling**
+
+* **Circular Dependencies**: If Module A is a prerequisite of Module B, the system prevents adding Module B as a prerequisite to Module A.
+* **Self-Assignment**: The command ignores attempts to add a module as a prerequisite to itself (e.g., adding `CS2113` to `CS2113`).
+* **Non-existent Target**: If the target module is not in the `taskList`, the system displays a "No modules found" error.
+* **Duplicate Prerequisites**: Handled internally by the `Mod` class to prevent redundant entries.
+
+##### **Example Usage**
 
 ```text
-addprereq n/CG2023 p/CG1111,CS1010
+prereq add n/CG2023 p/CG1111, CS1010
 ```
-
-##### Parsing Logic
-
-The `Parser` identifies the `addprereq` keyword and extracts:
-
-* the module name from the `n/` prefix
-* a list of prerequisite module codes from the `p/` prefix
-
-The extracted values are used to construct an `AddPrereqCommand` object, which is then passed to the main execution loop.
-
-##### Class Interaction
-
-* `Parser` constructs the `AddPrereqCommand`
-* `AddPrereqCommand` searches through the `ArrayList<Mod>`
-* `Mod` handles prerequisite storage via its internal list
-* after execution, the updated list is persisted by the `Storage` component
-
-##### Edge Cases and Error Handling
-
-The feature currently handles the following cases:
-
-* module names entered in lowercase or mixed case
-* duplicate prerequisite insertion (ignored)
-* non-existent module names (no modification made)
-* empty prerequisite lists (no changes applied)
-
-##### Current Limitation
-
-The current implementation stores prerequisites as strings and does not verify whether each prerequisite module itself exists in the tracked module list or in the reference list.
-
-##### Cross-Feature Interaction
-
-The `addprereq` feature complements `showprereq` by supplying the prerequisite data later displayed to the user. It also interacts conceptually with `mark` and `transfer`, because prerequisite information may influence a user's decision to complete or transfer a module even though the current implementation does not enforce eligibility checks.
 
 ##### Sequence Diagram
 ![img.png](AddPreReqSequenceDiagram.png)
 
 #### 12. Show Prerequisite Feature
 
-The **`ShowPrereqCommand`** allows the user to view all prerequisites of a specified module.
+The **`ShowPrereqCommand`** allows users to view the list of prerequisites currently associated with a specific module in their tracker. This command is invoked using the `prereq show` syntax.
 
 **Implementation**
 
-The display mechanism is facilitated by the `ShowPrereqCommand` class. When executed, the command searches the module list using case-insensitive matching.
+The display mechanism is facilitated by the `ShowPrereqCommand` class. Upon execution, the `execute()` method performs the following logic:
 
-If the module is found:
+1.  **Search**: It iterates through the `taskList` to find a module that matches the provided `modName` (case-insensitive).
+2.  **Display**:
+    * If the module is found, it calls `ui.showPrerequisites(mod)`.
+    * The UI then retrieves the prerequisite list from the `Mod` object and displays them. If the list is empty, it indicates that no prerequisites are recorded.
 
-* the system prints `Prerequisites for <modName>:`
-* if prerequisites exist, they are printed as a comma-separated list
-* if no prerequisites exist, `None` is displayed
+If no matching module is found, the command triggers `ui.showNoModulesFound()`.
 
-If no matching module is found:
+##### **Parsing Logic**
 
-* the system prints `Module not found.`
+The `Parser` identifies the `prereq` keyword followed by the `show` sub-command and extracts:
+* The target module name from the `n/` prefix.
 
-This feature helps users quickly check module requirements.
+These values construct the `ShowPrereqCommand` object, which is then passed to the main execution loop in `ModTrack`.
 
-**Example:**
+##### **Class Interaction**
 
+1.  **Parser**: Instantiates `ShowPrereqCommand` with the target name.
+2.  **ShowPrereqCommand**: Searches the `taskList` for the target `Mod` object.
+3.  **ShowPrereqCommand -> Ui**: Passes the found `Mod` object to the UI for rendering.
+4.  **Ui -> Mod**: Retrieves the prerequisites for display.
+
+##### **Edge Cases and Error Handling**
+
+* **Case-Insensitivity**: Module names are matched regardless of casing (e.g., `cs2113` matches `CS2113`).
+* **Empty Prerequisite List**: If a module exists but has no prerequisites, the UI informs the user that there are no prerequisites assigned.
+* **Non-existent Module**: If the module name does not exist in the `taskList`, a "No modules found" error is displayed.
+
+##### **Current Limitation**
+
+The current implementation displays only the direct prerequisites of the specified module and does not recursively generate a full dependency tree (prerequisite chains).
+
+##### **Example Usage**
+
+**Command:**
 ```text
-showprereq n/CS2113
+prereq show n/CS2113
 ```
 
 **Output:**
@@ -754,36 +761,6 @@ showprereq n/CS2113
 Prerequisites for CS2113:
 CS1010, CS2040C
 ```
-
-##### Parsing Logic
-
-The `Parser` identifies the `showprereq` keyword and extracts the module name from the `n/` prefix.
-
-A `ShowPrereqCommand` object is then created and passed to the execution loop.
-
-##### Class Interaction
-
-* `Parser` constructs the `ShowPrereqCommand`
-* `ShowPrereqCommand` searches through the `ArrayList<Mod>`
-* `Mod` provides access to its stored prerequisite list
-* Output is printed directly via the command (UI layer interaction)
-
-##### Edge Cases and Error Handling
-
-The feature currently handles the following cases:
-
-* case-insensitive module name matching
-* modules with no prerequisites (prints `None`)
-* non-existent module names (prints `Module not found.`)
-
-##### Current Limitation
-
-The current implementation only displays direct prerequisites and does not recursively display prerequisite chains.
-
-##### Cross-Feature Interaction
-
-This feature depends directly on `addprereq`, since prerequisite data must first be stored before it can be displayed. It also supports user decisions around `mark`, `transfer`, and semester planning by making dependency information visible.
-
 ##### Sequence Diagram
 ![img.png](ShowPreReqSequenceDiagram.png)
 
