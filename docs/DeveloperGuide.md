@@ -389,10 +389,10 @@ The list features reflect the effects of commands such as `add`, `delete`, `mark
 
 #### Sequence Diagram
 `List` command Sequence Diagram
-![img_10.png](ListCommand.png)
+![img.png](ListSequenceDiagram.png)
 
 `List c/` command Sequence Diagram 
-![img_10.png](ListCompareCommand.png)
+![img.png](ListCompareSequenceDiagram.png)
 
 #### 5. Find Feature
 
