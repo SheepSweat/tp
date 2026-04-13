@@ -448,7 +448,7 @@ Resolution:
 
 | Action | Format | Example |
 |--------|--------|---------|
-| **Add Module** | `add n/NAME y/YEAR s/SEM [c/CREDITS]` | `add n/CS2113 y/year2 s/sem1 c/4` |
+| **Add Module** | `add n/NAME y/YEAR s/SEM [c/CREDITS]` | `add n/CS2113 y/YEAR2 s/SEM1 c/4` |
 | **Delete Module** | `delete n/NAME` | `delete n/CS2113` |
 | **Mark Complete** | `mark n/NAME` | `mark n/CS2113` |
 | **Unmark** | `unmark n/NAME` | `unmark n/CS2113` |
