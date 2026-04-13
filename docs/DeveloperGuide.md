@@ -120,7 +120,7 @@ The following sequence diagram shows how the `Ui` component interacts with other
 The Command mechanism is facilitated by the abstract `Command` class. It serves as the base for all executable actions within **ModTrack**, allowing the `Parser` to delegate logic to specific command objects.
 
 Class Diagram:
-![img_10.png](CommandClassDiagram.png)
+![img_10.png](  CommandClassDiagram.png)
 
 The abstract `Command` class defines a core method: `execute(ArrayList<Mod> list)`. Concrete subclasses implement this method to perform specific operations on the module list.
 
@@ -499,7 +499,7 @@ The mark feature directly affects `list c/`, because completed modules count tow
 The current implementation was chosen because module codes such as `CS2113` are already unique and meaningful to the user, making command usage more natural in a CLI-based academic tracker.
 
 ##### Sequence Diagram
-![img_13.png](img_13.png)
+![img_4.png](MarkClassDiagram.png)
 
 The sequence diagram above shows how the `mark` command is handled:
 1. The user enters the `mark` command
@@ -574,7 +574,7 @@ The unmark feature directly affects `list c/` by removing the module from the se
 The current implementation was chosen to keep user interactions simple and explicit. Since the application is intended for fast CLI usage, direct commands such as `mark` and `unmark` are easier for users to remember and use.
 
 ##### Sequence Diagram
-![img_14.png](img_14.png)
+![img_4.png](UnmarkClassDiagram.png)
 
 The sequence diagram above shows how the `unmark` command is handled:
 1. The user enters the `unmark` command
@@ -582,18 +582,6 @@ The sequence diagram above shows how the `unmark` command is handled:
 3. `UnmarkCommand` iterates through the tracked module list
 4. If a matching module is found, its completion status is reset
 5. The updated list is saved through the `Storage` component
-
-##### UML Class Diagram
-
-![img_9.png](img_9.png)
-
-The class diagram above illustrates the command-based architecture used in ModTrack. `ModTrack` acts as the central controller of the application and coordinates interactions between the `Parser`, `Storage`, and the module list. The `Parser` is responsible for converting raw user input into a concrete subclass of the abstract `Command` class.
-
-The `Command` abstraction allows different user actions to be encapsulated into separate classes such as `MarkCommand`, `UnmarkCommand`, `ExitCommand`, and `ShowGradReqCommand`. This design promotes modularity by ensuring that each command handles only one responsibility.
-
-Besides `mark` and `unmark`, the application also supports other core command interactions such as `exit` and `show grad req`. These commands follow the same command-based design architecture, where the `Parser` maps user input into a specific subclass of `Command`, and the `ModTrack` main loop executes the corresponding action.
-
-This design allows the application to remain modular and scalable, as future commands can be introduced with minimal changes to the overall control flow.
 
 #### 7. Exit Feature
 
