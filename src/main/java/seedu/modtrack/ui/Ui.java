@@ -206,4 +206,8 @@ public class Ui {
         System.out.println("- GENXXXX");
         System.out.println("- GECXXXX");
     }
+    public void showCircularDependencyWarning(String prereq, String targetMod) {
+        System.out.println("Warning: Circular dependency detected!");
+        System.out.println(prereq + " already requires " + targetMod + ". Skipping.");
+    }
 }

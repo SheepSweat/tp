@@ -70,6 +70,10 @@ public class ReferenceList {
         list.add(newmod);
         newmod = new Mod("EG2401A", 3, 1, 2);
         list.add(newmod);
+        newmod = new Mod("GECXXXX", 1, 1, 4);
+        list.add(newmod);
+        newmod = new Mod("GENXXXX", 2, 2, 4);
+        list.add(newmod);
     }
 
     public static ArrayList<Mod> getReferenceList() {

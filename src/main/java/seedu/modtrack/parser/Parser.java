@@ -139,7 +139,20 @@ public class Parser {
             ArrayList<String> prereqs = new ArrayList<>();
 
             for (String prereq : prereqArray) {
-                prereqs.add(prereq.trim().toUpperCase());
+                String trimmedPrereq = prereq.trim().toUpperCase();
+                if (trimmedPrereq.isEmpty()) {
+                    continue;
+                }
+                if (trimmedPrereq.equals(modName)) {
+                    throw new InvalidCommandException("Illogical dependency: " + modName
+                            + " cannot be a prerequisite for itself.");
+                }
+
+                prereqs.add(trimmedPrereq);
+            }
+
+            if (prereqs.isEmpty()) {
+                throw new InvalidCommandException("Please provide at least one valid prerequisite code.");
             }
 
             return new AddPrereqCommand(modName, prereqs);
