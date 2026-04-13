@@ -122,7 +122,7 @@ The Command mechanism is facilitated by the abstract `Command` class. It serves 
 Class Diagram:
 ![img_10.png](CommandClassDiagram.png)
 
-The abstract `Command` class defines a core method: `execute(ArrayList<Mod> list)`. Concrete subclasses implement this method to perform specific operations on the module list.
+The abstract `Command` class defines a core method: `execute(ArrayList<Mod> list, Ui ui)`. Concrete subclasses implement this method to perform specific operations on the module list.
 
 While the system includes several commands (such as `MarkCommand`, `ListCommand`, and `ExitCommand`), the following classes represent the primary data-manipulation logic:
 
@@ -130,7 +130,7 @@ While the system includes several commands (such as `MarkCommand`, `ListCommand`
 ```java
 public abstract class Command {
     protected boolean isExit = false;
-    public abstract void execute(ArrayList<Mod> list);
+    public abstract void execute(ArrayList<Mod> list, Ui ui);
     public boolean isExit() { return this.isExit; }
 }
 ```
@@ -356,6 +356,14 @@ output completed and uncompleted modules in 2 separate lists using the `toString
 * Alternatives considered: Using a single command class and separating the executions by methods within the class.
   This was rejected as it will cause list to have a different structure from the other command classes causing confusion.
 
+**Example:**
+
+```text
+list
+```
+```text
+list c/
+```
 ##### Parsing Logic
 
 The `Parser` identifies the `list` keyword and determines whether the compare modifier `c/` is present:
@@ -395,42 +403,82 @@ The list features reflect the effects of commands such as `add`, `delete`, `mark
 ![img.png](ListCompareSequenceDiagram.png)
 
 #### 5. Find Feature
-
-The FindCommand allows users to search for modules within their tracked list using a keyword. 
-The search is case-insensitive and matches any module whose name contains the provided keyword.
+The **`FindCommand`** allows users to filter their tracked module list by searching for specific keywords. This is a read-only operation that does not modify the underlying data.
 
 **Implementation**
-The `execute()` method in the `FindCommand` class iterates through the list of modules tracked by the program,
-printing any module that contains the given module name.If no matches are found, a "No matching module found" message 
-is displayed to the user.
 
-#### Design Considerations:
-* The find feature implements a linear search method of searching for the given module.
-* Pros: Very simple to implement and maintain. It is perfectly efficient for a student's module list (typically < 100 modules).
-* Cons:  If the list were to grow to thousands of modules, $O(n)$ time complexity might become noticeable.
-* Alternative considered: Using a HashMap for $O(1)$ lookups.
-* Reason for skipping: Given that the module list is less than 100 modules for the CEG curriculum, using a hash map 
-serves no considerable benefit and would needlessly complicate the code hence more prone to implementation bugs.
+The search mechanism is facilitated by the `FindCommand` class. Upon execution, the `execute()` method performs a two-stage process:
+
+1.  **Filtering**: It calls the internal helper method `findAllMatches(taskList)`, which performs a case-insensitive linear search. It populates a new `ArrayList<Mod>` containing all modules where the name contains the search keyword.
+2.  **Display**:
+    * If matches are found, the command iterates through the results and calls `ui.showMatchingModule(mod)`.
+    * If the result list is empty, it triggers `ui.showNoModulesFound()`.
+
+##### **Example:**
+```text
+find n/CS
+```
+
+##### **Parsing Logic**
+
+The `Parser` identifies the `find` keyword and extracts the search string from the `n/` prefix. A `FindCommand` object is then instantiated with this keyword and passed to the main execution loop.
+
+##### **Class Interaction**
+
+The following sequence describes the interaction during a search:
+1.  **Parser**: Extracts the keyword and creates the `FindCommand`.
+2.  **FindCommand**: Invokes `findAllMatches()` to filter the `taskList`.
+3.  **FindCommand -> Ui**: Triggers `ui.showDivider()` and headers before iterating through found modules.
+4.  **FindCommand -> Ui**: For each match, calls `ui.showMatchingModule(modFound)`.
+
+##### **Design Considerations**
+
+* **Search Algorithm**: The feature implements a **linear search** ($O(n)$ time complexity).
+    * **Pros**: Highly robust and easy to maintain. Since a student's module list typically contains fewer than 100 modules, the performance impact is negligible.
+    * **Cons**: Scaling to thousands of modules would require a more complex indexing strategy.
+* **Alternative Considered**: Using a `HashMap` for $O(1)$ lookups.
+    * **Reason for Rejection**: A `HashMap` would only allow for exact matches. Since the `FindCommand` is designed to match substrings (e.g., searching "CS" to find both "CS1010" and "CS2113"), a linear scan of the list is technically necessary and more functional for the user.
+
 #### Sequence Diagram
 ![img_4.png](FindCommandDiagram.png)
 
 #### 6 Exempt Feature
-The ExemptCommand allows users to mark a specific module as Exempted. This is typically used for modules where the 
-student has received a waiver or credit transfer, meaning the module is considered "cleared" without a traditional 
-grade or progress tracking.
+The **`ExemptCommand`** allows users to mark a specific module as "Exempted." This is intended for modules where the student has received a waiver or credit transfer, acknowledging the module as cleared without traditional grading.
 
 **Implementation**
 
-The command performs a linear search through the taskList using the provided modName. The search is case-insensitive to 
-improve user experience.Once a matching module is found, the command calls mod.setToExempted(). This method 
-(internal to the Mod class) typically sets the module's status to a special "Exempted" state. To optimize performance, 
-the method uses a return statement immediately after finding and updating the module, preventing unnecessary iterations.
-If the loop completes without finding a match, the command provides feedback to the user stating that the module was not found.
+The exemption logic is facilitated by the `ExemptCommand` class. Upon execution, the `execute()` method performs the following operations:
 
-#### Design Considerations:
-* The design choice was made to encapsulate the "Exemption" logic within the Mod class rather than the ExemptCommand.
-* This ensures that when a module is exempted, all related data (like completion status or modular credits) is updated 
-consistently in one place, preventing "divergent change" bugs where the command forgets to update a specific flag.
+1.  **Linear Search**: It iterates through the `taskList` using a case-insensitive match on the `modName`.
+2.  **State Update**: Once a match is found, the command invokes `mod.setToExempted()`.
+3.  **Efficiency**: The method utilizes an early `return` statement immediately after the update and UI feedback to terminate the loop, preventing redundant $O(n)$ iterations.
+4.  **Feedback**: If the loop concludes without a match, `ui.showNoModulesFound()` is called to notify the user.
+
+##### **Example:**
+```text
+exempt n/MA1511
+```
+
+##### **Parsing Logic**
+
+The `Parser` identifies the `exempt` keyword and dispatches the logic to the `parseExempt` method. This method uses `extractValue(arguments, "n/")` to isolate the target module name.
+
+The resulting string is then used to instantiate the `ExemptCommand`. If `extractValue` fails to find the `n/` prefix or returns an empty string, an `InvalidCommandException` is thrown, preventing the execution of a command with a null or invalid module target.
+
+##### **Design Considerations**
+
+* **Encapsulation of State**: A deliberate design choice was made to encapsulate the "Exemption" logic within the `Mod` class rather than the `ExemptCommand`.
+    * **Reason**: By centralizing the state change within `Mod`, we ensure that all internal flags (e.g., completion status, credit counting, and completion type) are updated atomically. This prevents "Divergent Change" and "Data Anomaly" bugs where different commands might otherwise update statuses inconsistently.
+* **Case-Insensitivity**: By normalizing input during the search, the system remains robust against user variance (e.g., `ma1511` vs `MA1511`), improving the overall User Experience (UX).
+
+##### **Class Interaction**
+
+1.  **Parser**: Instantiates `ExemptCommand` with the target module name.
+2.  **ExemptCommand**: Traverses the `taskList`.
+3.  **ExemptCommand -> Mod**: Calls `setToExempted()` to modify internal state.
+4.  **ExemptCommand -> Ui**: Triggers `ui.showExemptedModule(mod)` to confirm the change.
+5.  **Storage**: The updated status is automatically persisted during the next save cycle.
+
 #### Sequence Diagram
 ![img.png](ExemptCommandDiagramNew.png)
 
@@ -700,10 +748,16 @@ The following sequence describes the interaction during a prerequisite addition:
 * **Non-existent Target**: If the target module is not in the `taskList`, the system displays a "No modules found" error.
 * **Duplicate Prerequisites**: Handled internally by the `Mod` class to prevent redundant entries.
 
-##### **Example Usage**
+##### **Example:**
 
 ```text
 prereq add n/CG2023 p/CG1111, CS1010
+```
+**Output:**
+
+```text
+Prerequisites updated for cg2023:
+CG1111, CS1010
 ```
 
 ##### Sequence Diagram
@@ -748,7 +802,7 @@ These values construct the `ShowPrereqCommand` object, which is then passed to t
 
 The current implementation displays only the direct prerequisites of the specified module and does not recursively generate a full dependency tree (prerequisite chains).
 
-##### **Example Usage**
+##### **Example:**
 
 **Command:**
 ```text
