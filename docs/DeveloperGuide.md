@@ -80,9 +80,8 @@ For every user input, `ModTrack` coordinates the following sequence:
 
 ### UI Component
 
-![Structure of the UI Component](images/UiComponentDiagram.png)
-
-**Figure X. Structure of the UI Component**
+Class Diagram:
+![Class diagram of the UI class](UiClassDiagram.png)
 
 The `Ui` component is responsible for handling all user interactions in ModTrack via the Command Line Interface (CLI).
 
@@ -114,13 +113,14 @@ Each method is designed to handle a **single responsibility**, ensuring modulari
 
 The following sequence diagram shows how the `Ui` component interacts with other components when a user executes the `add` command.
 
-![Sequence diagram of the UI Component](images/UiSequenceDiagram.png)
+Sequence diagram of UI class:
+![Sequence diagram of the UI Component](UiSequenceDiagram.png)
 
 ### Command Component
 The Command mechanism is facilitated by the abstract `Command` class. It serves as the base for all executable actions within **ModTrack**, allowing the `Parser` to delegate logic to specific command objects.
 
 Class Diagram:
-![img_10.png](  CommandClassDiagram.png)
+![img_10.png](CommandClassDiagram.png)
 
 The abstract `Command` class defines a core method: `execute(ArrayList<Mod> list)`. Concrete subclasses implement this method to perform specific operations on the module list.
 
