@@ -2,44 +2,50 @@
 
 ## **Overview**
 
-I am a Year 2 Computer Engineering student at NUS, and this portfolio highlights my technical contributions to **ModTrack**, a CLI-based module management application. My primary focus was establishing the foundational architecture for command execution and ensuring data persistence through the storage layer.
+ModTrack is a CLI (Command Line Interface) application designed for NUS students to track their modular requirements. 
+It is optimized for users who prefer typing over graphical interfaces, built using a Logic-heavy Java architecture.
 
 ---
 
 ## **Summary of Contributions**
 
 ### **1. Setting up project repository**
-* **What it is:** I set up the project repo and ensure a sensible workflow among my team members
-* **Impact:** This allows the team to work on their distinct areas and tasks independently, while ensuring version control.
+* **Infrastructure:** Established the centralized GitHub repository and configured the build automation using Gradle.
+* **Workflow:** Implemented a branching strategy and protected master branch rules to ensure that the 
+team could develop features (Add, Delete, List) concurrently without merge conflicts.
+* **Impact:** Provided a stable environment that allowed the team to scale from a basic skeleton to a full-featured application within a single semester.
 
-### **2. List and List Compare Command**
-* **What it is:** I implemented the command structures for the list commands
-* **Technical Detail:** The ListCompareCommand functions as a cross-referencing engine that validates the user's local module list against a static "source of truth" (the ReferenceList). 
-* **Robustness:** The commands separates the available modules into two separate list, completed and uncompleted to be printed out at the end to ensure no duplicates.
+### **2. Cross-Referencing Engine (List & ListCompare)**
+* **Feature:** Engineered the logic for ListCommand and ListCompareCommand.
+* **Technical Detail:** Developed a comparison algorithm that validates a user’s current ModuleList against a static 
+ReferenceList (the "Source of Truth" for graduation requirements).
+  * **Dynamic Categorization of UEs:** Implemented logic to recognize modules that do not exist in the static 
+  requirement list. The system automatically classifies them as Unrestricted Electives (UEs),
+  ensuring a comprehensive view of a student's academic progress.
+* **Logic Separation:** Implemented categorization logic that dynamically filters modules into Completed, Uncompleted, 
+and UE lists. This prevents data duplication and provides a clean, bifurcated UI output for better readability.
 
-### **3. Quality Assurance & Testing**
-* I authored comprehensive **JUnit** test suites for the `List`, `Mark`, `Unmark` and `Find` commands
-* To maintain a high standard of code quality, I built a comprehensive testing suite that covers both Success and Negative paths.
-* Utilized ByteArrayOutputStream to capture and verify console output, allowing for automated verification of UI requirements.
-* Added assertions in command execution to ensure expected behaviours. 
+### **3. Software Quality Assurance (JUnit 5 & Assertions)**
+* **Automated Testing:** Authored comprehensive test suites for List, Mark, Unmark, and Find.
+* **Defensive Programming:** Integrated Java Assertions within the command execution flow to catch logic errors during 
+development (e.g., ensuring ModuleList is never null before a search).
+* **I/O Testing:** Implemented a specialized testing harness using ByteArrayOutputStream to capture and verify console outputs. 
+This ensured that the UI remained consistent across different OS environments.
+* **Edge Case Coverage:** Designed "Negative Path" tests to gracefully handle invalid user inputs, such as incorrect module formats or out-of-bounds indices. 
 ---
 
 ## **Contributions to Documentation**
 
 * **Developer Guide:**
-  - I authored the implementation details for the `list`, `find`, and `exempt` commands, detailing the 
-  logic behind the cross-referencing engine used to compare user modules against graduation requirements.  
-  - I documented a comprehensive guide for manual testing, providing specific test cases to ensure future developers can 
-  verify edge cases. 
-  - I analyzed and documented alternative design considerations, evaluating the trade-offs between
-  different data structures for search optimization.
-* **User Guide:** 
-  - I spearheaded the initial structure and layout of the User Guide, establishing a consistent documentation standard 
-  for the team. 
-  - I authored the Introduction and Quick Start sections to ensure a smooth onboarding experience for new users. 
-  - I consolidated all features into a comprehensive Command Summary Table for quick reference 
-  - I oversaw the final compilation of the Version 1.0 documentation, ensuring technical accuracy and clarity across all 
-  command descriptions.
+  * **Logic Mapping:** Authored the implementation section for the list, find, and exempt commands. Included Sequence Diagrams 
+  to illustrate how the Parser interacts with the Command and Storage classes.
+  * **Design Trade-offs:** Documented the rationale for choosing specific data structures for 
+  module storage, balancing memory efficiency against search speed.
+  * **Manual Test Script:** Created a rigorous manual testing protocol for features that are difficult to automate, ensuring 100% feature coverage for the release.
+* **User Guide:**
+  * Standardization: Designed the visual layout and Markdown structure of the UG to ensure professional consistency.
+  * Onboarding: Wrote the "Quick Start" and "Introduction" sections, translating technical jargon into user-friendly instructions.
+  * Command Reference: Compiled the "Command Summary Table," which became the primary troubleshooting resource.
 
 ## **Overall Contribution**
 I developed of core command logic while establishing the project’s JUnit 5 testing framework to ensure cross-platform 
