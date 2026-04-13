@@ -953,7 +953,7 @@ Expected Result: Run the list command; it should now display these three modules
 3. Testing Core Commands
 
 Find Functionality
-(Test Case: find CS)
+(Test Case: find n/CS)
 
 Expected Result: Displays CS1010 and CS2113.
 
@@ -962,7 +962,7 @@ Test Case: find non-existent
 Expected Result: Displays "No matching module found."
 
 Exemption Logic
-(Test Case: exempt CS2113)
+(Test Case: exempt n/CS2113)
 
 Expected Result: Confirmation message "Module marked as exempted: CS2113". Running list should show the status has changed.
 
