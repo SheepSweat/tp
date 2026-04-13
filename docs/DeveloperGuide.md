@@ -753,7 +753,7 @@ The `addprereq` feature complements `showprereq` by supplying the prerequisite d
 ##### Sequence Diagram
 ![img_12.png](img_12.png)
 
-#### 9. Show Prerequisite Feature
+#### 10. Show Prerequisite Feature
 
 The **`ShowPrereqCommand`** allows the user to view all prerequisites of a specified module.
 
@@ -818,7 +818,7 @@ This feature depends directly on `addprereq`, since prerequisite data must first
 ##### Sequence Diagram
 ![img_11.png](img_11.png)
 
-#### 10. Transfer Feature
+#### 11. Transfer Feature
 
 The **`TransferCommand`** allows the user to mark a module as transferred, treating it as completed.
 
