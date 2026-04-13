@@ -32,6 +32,7 @@ development (e.g., ensuring ModuleList is never null before a search).
 * **I/O Testing:** Implemented a specialized testing harness using ByteArrayOutputStream to capture and verify console outputs. 
 This ensured that the UI remained consistent across different OS environments.
 * **Edge Case Coverage:** Designed "Negative Path" tests to gracefully handle invalid user inputs, such as incorrect module formats or out-of-bounds indices. 
+
 ### **4. Bug Fixes & Logic Refinement**
 * **Dependency Integrity Logic:** Engineered a multi-stage validation system for the prereq command to prevent illogical academic structures. 
   * **Circular Dependency Detection:** Implemented a cross-module lookup to block mutual dependencies ($A \leftrightarrow B$), ensuring the graduation path remains valid.
