@@ -25,16 +25,10 @@ public class Ui {
         System.out.println("----------------------------------------------------");
     }
 
-    public void showEmptyDescriptionError(String command) {
-        assert command != null : "Command should not be null";
-        System.out.println(" " + command + " Number cannot be empty, ensure a Module code is written after '" + command
-                + "'. Thankssssss!");
-    }
-
     public void showInvalidCommandError(InvalidCommandException e) {
-        System.out.println("----------------------------------------------------");
+        this.showDivider();
         System.out.println(e.getMessage());
-        System.out.println("----------------------------------------------------");
+        this.showDivider();
     }
 
     public void showInvalidNumberError() {

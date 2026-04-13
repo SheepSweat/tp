@@ -16,7 +16,7 @@ public class ClearCommand extends Command {
     @Override
     public void execute(ArrayList<Mod> list, Ui ui) {
         // 1. Ask for confirmation via UI
-        if (!this.ClearConfirmation(ui)) {
+        if (!this.clearConfirmation(ui)) {
             return;
         }
 
@@ -36,7 +36,7 @@ public class ClearCommand extends Command {
         logger.log(Level.INFO, "Successfully cleared all modules.");
     }
 
-    public boolean ClearConfirmation(Ui ui) {
+    public boolean clearConfirmation(Ui ui) {
         String confirmation = ui.showClearConfirmationPrompt();
         return confirmation.equalsIgnoreCase("yes");
     }

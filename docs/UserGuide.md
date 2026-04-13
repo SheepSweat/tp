@@ -258,6 +258,192 @@ Bye. Hope to see you again soon!
 
 ---
 
+## Potential Errors Encountered
+
+This section aims to list potential errors faced when using the application and guide users in resolving the issues or changing subsequent inputs.
+
+### Errors with inputs
+This section consists of errors that are faced with incorrect or incomplete inputs.
+
+**Empty input**
+```text
+
+----------------------------------------------------
+Input cannot be empty.
+----------------------------------------------------
+```
+Resolution:
+* Please enter an input
+
+**Missing required prefix**:
+``` text
+add cs2113
+----------------------------------------------------
+Missing field: n/
+----------------------------------------------------
+```
+Resolution: 
+* Ensure the required prefixes shown (`n/`, `y/`, `s/`) is included.
+
+**Empty fields**:
+``` text
+add cs2113
+----------------------------------------------------
+Missing field: n/
+----------------------------------------------------
+```
+Resolution:
+* Ensure that the field is not blank
+
+### Adding a module: `add`
+
+**Duplicate module**:
+``` text
+This module is already in the list!
+```
+Resolution:
+* Use `list` to check existing modules before adding.
+
+**Existing but incomplete module**
+```text
+This module already exists in the list, but is currently incomplete.
+To mark this module as complete, use: mark n/CS2113
+```
+Resolution: 
+* Use the `mark` command instead of adding again.
+
+
+### Deleting a module: delete
+
+**Missing Module**
+```text
+Module not found
+Module does not exist. Choose another number.
+```
+Resolution:
+- Ensure the module exists by checking with list.
+
+### Marking a module: mark
+
+**Missing Module**
+```text
+Module not found
+Module does not exist. Choose another number.
+```
+Resolution:
+- Ensure the module has been added before marking.
+
+### Unmarking a module: unmark
+
+**Missing Module**
+```text
+Module not found
+Module does not exist. Choose another number.
+```
+Resolution:
+- Ensure the module exists before attempting to unmark.
+
+### Handling exemptions: exempt
+
+**Missing Module**
+```text
+Module not found
+Module does not exist. Choose another number.
+```
+Resolution:
+- Ensure the module exists before marking it as exempted.
+
+### Handling transferred modules: transfer
+
+**Missing Module**
+```text
+Module not found
+Module does not exist. Choose another number.
+```
+Resolution:
+- Ensure the module exists before transferring it.
+
+### Adding prerequisites: prereq add
+
+**Missing Module**
+```text
+Module not found
+Module does not exist. Choose another number.
+```
+Resolution:
+- Ensure the module exists before adding prerequisites.
+
+**Missing Prefix**
+```text
+----------------------------------------------------
+Missing field: n/
+----------------------------------------------------
+```
+Resolution:
+- Ensure you include the prerequisite prefix and provide at least one prerequisite module.
+
+### Showing prerequisites: prereq show
+
+**Missing Module**
+```text
+Module not found
+Module does not exist. Choose another number.
+```
+Resolution:
+- Ensure the module exists before viewing prerequisites.
+
+### List all modules: list
+
+**No modules tracked**
+```text
+===== Your Tracked Modules =====
+No modules tracked yet.
+```
+Resolution:
+- Add modules using the add command before running list.
+
+### Compare with Graduation Requirements: list c/
+
+**No completed modules**
+```text
+____________________________________________________________
+Comparison with Graduation Requirements (CE):
+
+✔ COMPLETED MODULES:
+  (None yet)
+
+✘ MISSING/UNCOMPLETED MODULES:
+...
+____________________________________________________________
+```
+Resolution:
+- Mark modules using mark or transfer before inputing the command.
+
+### Show graduation requirements: show grad req
+
+```text
+Unknown show command. Did you mean 'show grad req'?
+```
+Resolution:
+- Ensure the command is input correctly with no missing or extra spaces.
+
+### Clearing all data: clear
+```text
+The 'clear' command does not take any arguments.
+```
+Resolution:
+- Key in 'clear' with no other words
+
+### Exiting: exit / bye
+
+```text
+The 'bye' command does not take any arguments.
+```
+Resolution:
+- Key in 'bye' with no other words
+
+---
+
 ## Command Summary
 
 | Action | Format | Example |

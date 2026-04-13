@@ -49,7 +49,7 @@ public class ClearCommandTest {
     @Test
     public void execute_populatedList_clearsAllModules() {
 
-        provideInput("yes\n");
+        this.provideInput("yes\n");
         ClearCommand command = new ClearCommand();
         command.execute(this.list, this.ui);
 
@@ -59,12 +59,12 @@ public class ClearCommandTest {
 
         // Verify console output
         String output = this.outContent.toString();
-        assertTrue(output.contains("All modules have been cleared"), "Should print confirmation message");
+        assertTrue(output.contains("Confirmed. Proceeding to clear all modules."), "Should print confirmation message");
     }
 
     @Test
     public void execute_emptyList_remainsEmpty() {
-        provideInput("yes\n");
+        this.provideInput("yes\n");
         ArrayList<Mod> emptyList = new ArrayList<>();
         ClearCommand command = new ClearCommand();
 
@@ -76,7 +76,7 @@ public class ClearCommandTest {
     @Test
     public void execute_confirmNo_doesNotClearModules() {
         // 1. Simulate the user typing "no"
-        provideInput("no\n");
+        this.provideInput("no\n");
 
         int originalSize = this.list.size();
         ClearCommand command = new ClearCommand();
